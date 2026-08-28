@@ -15,10 +15,9 @@
       "commandKind": "global",
       "name": "dev",
       "summary": "Run the apps/api and apps/web dev servers together",
-      "description": "Starts both watch servers with interleaved, prefixed output. This is deliberately a 'global' command rather than a 'bulk' one: Rush bulk commands stream only one project's output at a time and buffer the rest until that operation finishes, so with two servers that never finish you would only ever see the first one (the second's output goes to its rush-logs file instead). The project binaries are invoked directly rather than through 'rushx': the extra install-run-rushx -> rushx -> shell layers do not forward SIGINT, so Ctrl+C would leave both servers orphaned holding ports 3000/3001. 'concurrently' comes from the 'rush-dev' autoinstaller.",
+      "description": "Starts the apps/api and apps/web watch servers together, each via 'rushx dev' -- the per-project workflow documented at https://rushjs.io/pages/developer/everyday_commands/. This is deliberately a 'global' command rather than a 'bulk' one: Rush bulk commands stream only one project's output at a time and buffer the rest until that operation finishes, so with two servers that never finish you would only ever see the first one (the second's output goes to its rush-logs file instead). To run just one server, cd into its folder and run 'rushx dev' directly.",
       "safeForSimultaneousRushProcesses": true,
-      "autoinstallerName": "rush-dev",
-      "shellCommand": "concurrently --names api,web --prefix-colors cyan.bold,magenta.bold --kill-others \"cd apps/api && node_modules/.bin/nest start --watch\" \"cd apps/web && node_modules/.bin/vite dev --port 3000\""
+      "shellCommand": "node common/scripts/dev.js"
     },
     {
       "commandKind": "global",

@@ -1,10 +1,12 @@
 # Hotel Booking Monorepo — common developer commands.
 #
-# Rush is invoked via common/scripts/install-run-rush.js, so no global install is
-# needed: that script bootstraps the Rush and PNPM versions pinned in rush.json.
-# If you have Rush installed globally you can also just use `rush <command>`.
+# Rush is invoked via common/scripts/install-run-rush.js (and rushx via
+# install-run-rushx.js), so no global install is needed: those scripts bootstrap
+# the Rush and PNPM versions pinned in rush.json. If you have Rush installed
+# globally you can also just use `rush <command>` / `rushx <script>`.
 
 RUSH    := node common/scripts/install-run-rush.js
+RUSHX   := node ../../common/scripts/install-run-rushx.js -q
 COMPOSE := docker compose
 
 .DEFAULT_GOAL := help
@@ -63,19 +65,27 @@ check: format-check lint typecheck build ## Run every check the way CI would
 # The API can't start without Postgres, so `dev` always ensures the database is
 # up and accepting connections first — a missing database otherwise surfaces as
 # an opaque SSR "fetch failed" in the browser.
+# Stopping a dev server with Ctrl+C is not a build failure, but make reports it
+# as one ("*** [dev] Interrupt"). A `trap ... INT` doesn't help: the shell is
+# killed by the same signal as its child and skips the handler. So map only 130
+# (128 + SIGINT) to success and let every other exit code through, which keeps a
+# server that genuinely failed to start an error.
 dev: env db-wait ## Start the API and web dev servers (watch mode)
 	@echo "API -> http://localhost:3001/api"
 	@echo "Web -> http://localhost:3000"
-	@$(RUSH) dev
+	@$(RUSH) -q dev; rc=$$?; [ $$rc -eq 130 ] && exit 0; exit $$rc
 
-# These invoke the project binaries directly rather than going through `rushx`.
-# The install-run-rushx -> rushx -> shell chain does not forward SIGINT, so
-# Ctrl+C would leave the server orphaned still holding its port.
+# Single-project dev servers use `rushx`, the per-project task runner documented
+# at https://rushjs.io/pages/developer/everyday_commands/. Ctrl+C is delivered to
+# the terminal's whole foreground process group, so the full
+# install-run-rushx -> rushx -> shell -> server chain exits and frees the port.
+# (`rush dev` above cannot rely on that, since it starts two servers itself --
+# see common/scripts/dev.js.)
 api: env db-wait ## Start only the API dev server
-	@cd apps/api && node_modules/.bin/nest start --watch
+	@cd apps/api && $(RUSHX) dev; rc=$$?; [ $$rc -eq 130 ] && exit 0; exit $$rc
 
 web: env ## Start only the web dev server
-	@cd apps/web && node_modules/.bin/vite dev --port 3000
+	@cd apps/web && $(RUSHX) dev; rc=$$?; [ $$rc -eq 130 ] && exit 0; exit $$rc
 
 ## --- Database --------------------------------------------------------------
 
