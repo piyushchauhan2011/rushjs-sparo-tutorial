@@ -1,4 +1,4 @@
-import type { RoomAvailability } from '@hotel/shared-types';
+import type { RoomAvailability } from "@hotel/shared-types";
 import {
   Badge,
   Button,
@@ -13,23 +13,23 @@ import {
   DialogTitle,
   Input,
   Label,
-} from '@hotel/ui';
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import * as React from 'react';
+} from "@hotel/ui";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import * as React from "react";
 
-import { ApiError } from '@hotel/api-client';
-import { api } from '../lib/api.js';
-import { useAuth } from '../lib/auth.js';
+import { ApiError } from "@hotel/api-client";
+import { api } from "../lib/api.js";
+import { useAuth } from "../lib/auth.js";
 
 interface SearchParams {
   checkIn?: string;
   checkOut?: string;
 }
 
-export const Route = createFileRoute('/hotels/$hotelId')({
+export const Route = createFileRoute("/hotels/$hotelId")({
   validateSearch: (search: Record<string, unknown>): SearchParams => ({
-    checkIn: typeof search.checkIn === 'string' ? search.checkIn : undefined,
-    checkOut: typeof search.checkOut === 'string' ? search.checkOut : undefined,
+    checkIn: typeof search.checkIn === "string" ? search.checkIn : undefined,
+    checkOut: typeof search.checkOut === "string" ? search.checkOut : undefined,
   }),
   loader: ({ params }) => api.getHotel(params.hotelId),
   component: HotelDetailPage,
@@ -41,11 +41,15 @@ function HotelDetailPage() {
   const { user } = useAuth();
   const navigate = useNavigate({ from: Route.fullPath });
 
-  const [checkIn, setCheckIn] = React.useState(search.checkIn ?? '');
-  const [checkOut, setCheckOut] = React.useState(search.checkOut ?? '');
-  const [availability, setAvailability] = React.useState<RoomAvailability[] | null>(null);
+  const [checkIn, setCheckIn] = React.useState(search.checkIn ?? "");
+  const [checkOut, setCheckOut] = React.useState(search.checkOut ?? "");
+  const [availability, setAvailability] = React.useState<
+    RoomAvailability[] | null
+  >(null);
   const [error, setError] = React.useState<string | null>(null);
-  const [bookingRoomTypeId, setBookingRoomTypeId] = React.useState<string | null>(null);
+  const [bookingRoomTypeId, setBookingRoomTypeId] = React.useState<
+    string | null
+  >(null);
 
   async function checkAvailability(event: React.FormEvent) {
     event.preventDefault();
@@ -54,7 +58,9 @@ function HotelDetailPage() {
     try {
       setAvailability(await api.checkAvailability(hotel.id, checkIn, checkOut));
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Failed to check availability');
+      setError(
+        err instanceof ApiError ? err.message : "Failed to check availability",
+      );
     }
   }
 
@@ -76,10 +82,19 @@ function HotelDetailPage() {
           <CardTitle>Check availability</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={checkAvailability} className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:items-end">
+          <form
+            onSubmit={checkAvailability}
+            className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:items-end"
+          >
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="checkIn">Check in</Label>
-              <Input id="checkIn" type="date" required value={checkIn} onChange={(e) => setCheckIn(e.target.value)} />
+              <Input
+                id="checkIn"
+                type="date"
+                required
+                value={checkIn}
+                onChange={(e) => setCheckIn(e.target.value)}
+              />
             </div>
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="checkOut">Check out</Label>
@@ -99,30 +114,38 @@ function HotelDetailPage() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {hotel.roomTypes.map((roomType) => {
-          const availableRooms = availability?.find((entry) => entry.roomType.id === roomType.id)?.availableRooms;
+          const availableRooms = availability?.find(
+            (entry) => entry.roomType.id === roomType.id,
+          )?.availableRooms;
           return (
             <Card key={roomType.id}>
               <CardHeader>
                 <CardTitle>{roomType.name}</CardTitle>
               </CardHeader>
               <CardContent className="flex flex-col gap-2">
-                <p className="text-sm text-muted-foreground">{roomType.description}</p>
-                <p className="text-sm">Sleeps up to {roomType.maxGuests} guests</p>
+                <p className="text-sm text-muted-foreground">
+                  {roomType.description}
+                </p>
+                <p className="text-sm">
+                  Sleeps up to {roomType.maxGuests} guests
+                </p>
                 <p className="font-medium">${roomType.pricePerNight} / night</p>
                 {availability && (
                   <p className="text-sm">
                     {availableRooms && availableRooms > 0
                       ? `${availableRooms} room(s) available`
-                      : 'No rooms available for these dates'}
+                      : "No rooms available for these dates"}
                   </p>
                 )}
                 <Button
                   disabled={!availability || !availableRooms}
                   onClick={() =>
-                    user ? setBookingRoomTypeId(roomType.id) : void navigate({ to: '/login' })
+                    user
+                      ? setBookingRoomTypeId(roomType.id)
+                      : void navigate({ to: "/login" })
                   }
                 >
-                  {user ? 'Book this room' : 'Log in to book'}
+                  {user ? "Book this room" : "Log in to book"}
                 </Button>
               </CardContent>
             </Card>
@@ -131,7 +154,9 @@ function HotelDetailPage() {
       </div>
 
       <BookingDialog
-        roomType={hotel.roomTypes.find((rt) => rt.id === bookingRoomTypeId) ?? null}
+        roomType={
+          hotel.roomTypes.find((rt) => rt.id === bookingRoomTypeId) ?? null
+        }
         checkIn={checkIn}
         checkOut={checkOut}
         onClose={() => setBookingRoomTypeId(null)}
@@ -146,7 +171,12 @@ function BookingDialog({
   checkOut,
   onClose,
 }: {
-  roomType: { id: string; name: string; maxGuests: number; pricePerNight: number } | null;
+  roomType: {
+    id: string;
+    name: string;
+    maxGuests: number;
+    pricePerNight: number;
+  } | null;
   checkIn: string;
   checkOut: string;
   onClose: () => void;
@@ -161,18 +191,28 @@ function BookingDialog({
     setIsSubmitting(true);
     setError(null);
     try {
-      await api.createBooking({ roomTypeId: roomType.id, checkIn, checkOut, guests });
+      await api.createBooking({
+        roomTypeId: roomType.id,
+        checkIn,
+        checkOut,
+        guests,
+      });
       onClose();
-      void navigate({ to: '/bookings' });
+      void navigate({ to: "/bookings" });
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Failed to create booking');
+      setError(
+        err instanceof ApiError ? err.message : "Failed to create booking",
+      );
     } finally {
       setIsSubmitting(false);
     }
   }
 
   return (
-    <Dialog open={roomType !== null} onOpenChange={(open) => !open && onClose()}>
+    <Dialog
+      open={roomType !== null}
+      onOpenChange={(open) => !open && onClose()}
+    >
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Confirm booking</DialogTitle>

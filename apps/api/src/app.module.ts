@@ -1,11 +1,11 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { Module } from "@nestjs/common";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { AuthModule } from './auth/auth.module.js';
-import { BookingsModule } from './bookings/bookings.module.js';
-import { HotelsModule } from './hotels/hotels.module.js';
-import { UsersModule } from './users/users.module.js';
+import { AuthModule } from "./auth/auth.module.js";
+import { BookingsModule } from "./bookings/bookings.module.js";
+import { HotelsModule } from "./hotels/hotels.module.js";
+import { UsersModule } from "./users/users.module.js";
 
 @Module({
   imports: [
@@ -13,8 +13,8 @@ import { UsersModule } from './users/users.module.js';
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        type: 'postgres',
-        url: config.get<string>('DATABASE_URL'),
+        type: "postgres",
+        url: config.get<string>("DATABASE_URL"),
         autoLoadEntities: true,
         // Fine for this bootstrap/tutorial project; use migrations in a real production app.
         synchronize: true,

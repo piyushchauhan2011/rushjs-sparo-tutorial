@@ -10,12 +10,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@hotel/ui';
-import { createFileRoute } from '@tanstack/react-router';
+} from "@hotel/ui";
+import { createFileRoute } from "@tanstack/react-router";
 
-import { api } from '../lib/api.js';
+import { api } from "../lib/api.js";
 
-export const Route = createFileRoute('/bookings')({
+export const Route = createFileRoute("/bookings")({
   loader: () => api.myBookings(),
   component: BookingsPage,
 });
@@ -54,7 +54,11 @@ function BookingsPage() {
                   <TableCell>{booking.guests}</TableCell>
                   <TableCell>${booking.totalPrice}</TableCell>
                   <TableCell>
-                    <Badge variant={booking.status === 'confirmed' ? 'default' : 'secondary'}>
+                    <Badge
+                      variant={
+                        booking.status === "confirmed" ? "default" : "secondary"
+                      }
+                    >
                       {booking.status}
                     </Badge>
                   </TableCell>

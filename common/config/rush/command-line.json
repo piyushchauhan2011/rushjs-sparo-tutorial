@@ -21,6 +21,24 @@
       "incremental": false
     },
     {
+      "commandKind": "global",
+      "name": "format",
+      "summary": "Reformat all source files with Prettier",
+      "description": "Runs Prettier in write mode across the repo. Prettier is provided by the 'rush-prettier' autoinstaller, so no project needs it as a dependency.",
+      "safeForSimultaneousRushProcesses": true,
+      "autoinstallerName": "rush-prettier",
+      "shellCommand": "prettier --write \"**/*.{ts,tsx,js,jsx,mjs,cjs,json,css,md,yml,yaml}\""
+    },
+    {
+      "commandKind": "global",
+      "name": "format:check",
+      "summary": "Verify all source files are Prettier-formatted (CI-friendly)",
+      "description": "Same file set as 'rush format' but fails instead of rewriting, so CI can enforce formatting.",
+      "safeForSimultaneousRushProcesses": true,
+      "autoinstallerName": "rush-prettier",
+      "shellCommand": "prettier --check \"**/*.{ts,tsx,js,jsx,mjs,cjs,json,css,md,yml,yaml}\""
+    },
+    {
       "commandKind": "bulk",
       "name": "lint",
       "summary": "Run ESLint for every project",

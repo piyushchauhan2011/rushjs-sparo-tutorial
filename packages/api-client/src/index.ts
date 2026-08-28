@@ -7,7 +7,7 @@ import type {
   LoginRequest,
   RegisterRequest,
   RoomAvailability,
-} from '@hotel/shared-types';
+} from "@hotel/shared-types";
 
 export class ApiError extends Error {
   constructor(
@@ -15,7 +15,7 @@ export class ApiError extends Error {
     message: string,
   ) {
     super(message);
-    this.name = 'ApiError';
+    this.name = "ApiError";
   }
 }
 
@@ -30,17 +30,19 @@ export function createApiClient({ baseUrl, getToken }: ApiClientOptions) {
     const response = await fetch(`${baseUrl}${path}`, {
       ...init,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...init?.headers,
       },
     });
 
     if (!response.ok) {
-      const body = (await response.json().catch(() => ({ message: response.statusText }))) as {
+      const body = (await response
+        .json()
+        .catch(() => ({ message: response.statusText }))) as {
         message?: string;
       };
-      throw new ApiError(response.status, body.message ?? 'Request failed');
+      throw new ApiError(response.status, body.message ?? "Request failed");
     }
 
     if (response.status === 204) {
@@ -53,10 +55,13 @@ export function createApiClient({ baseUrl, getToken }: ApiClientOptions) {
   return {
     listHotels(query: HotelSearchQuery = {}) {
       const params = new URLSearchParams(
-        Object.entries(query).filter(([, v]) => v !== undefined) as [string, string][],
+        Object.entries(query).filter(([, v]) => v !== undefined) as [
+          string,
+          string,
+        ][],
       );
       const qs = params.toString();
-      return request<HotelWithRoomTypes[]>(`/hotels${qs ? `?${qs}` : ''}`);
+      return request<HotelWithRoomTypes[]>(`/hotels${qs ? `?${qs}` : ""}`);
     },
 
     getHotel(hotelId: string) {
@@ -65,23 +70,34 @@ export function createApiClient({ baseUrl, getToken }: ApiClientOptions) {
 
     checkAvailability(hotelId: string, checkIn: string, checkOut: string) {
       const params = new URLSearchParams({ checkIn, checkOut });
-      return request<RoomAvailability[]>(`/hotels/${hotelId}/availability?${params.toString()}`);
+      return request<RoomAvailability[]>(
+        `/hotels/${hotelId}/availability?${params.toString()}`,
+      );
     },
 
     createBooking(body: CreateBookingRequest) {
-      return request<Booking>('/bookings', { method: 'POST', body: JSON.stringify(body) });
+      return request<Booking>("/bookings", {
+        method: "POST",
+        body: JSON.stringify(body),
+      });
     },
 
     myBookings() {
-      return request<Booking[]>('/bookings/me');
+      return request<Booking[]>("/bookings/me");
     },
 
     register(body: RegisterRequest) {
-      return request<AuthResponse>('/auth/register', { method: 'POST', body: JSON.stringify(body) });
+      return request<AuthResponse>("/auth/register", {
+        method: "POST",
+        body: JSON.stringify(body),
+      });
     },
 
     login(body: LoginRequest) {
-      return request<AuthResponse>('/auth/login', { method: 'POST', body: JSON.stringify(body) });
+      return request<AuthResponse>("/auth/login", {
+        method: "POST",
+        body: JSON.stringify(body),
+      });
     },
   };
 }

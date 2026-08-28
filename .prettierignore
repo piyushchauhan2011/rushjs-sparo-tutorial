@@ -1,0 +1,28 @@
+# Build output
+dist/
+.output/
+.nitro/
+.vite/
+
+# Dependencies and Rush-managed state
+node_modules/
+common/temp/
+common/deploy/
+common/autoinstallers/*/node_modules/
+**/.rush/temp/
+**/rush-logs/
+
+# Lockfiles and generated files
+pnpm-lock.yaml
+**/routeTree.gen.ts
+*.tsbuildinfo
+
+# Rush config files are JSON-with-comments and follow Rush's own generated
+# formatting; reformatting them creates noisy diffs against upstream templates.
+common/config/rush/
+rush.json
+
+# Generated verbatim by Rush and rewritten on upgrade — reformatting them would
+# be undone the next time Rush regenerates them.
+common/scripts/
+common/autoinstallers/*/pnpm-lock.yaml

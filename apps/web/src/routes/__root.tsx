@@ -1,18 +1,24 @@
-import { createRootRoute, HeadContent, Link, Outlet, Scripts } from '@tanstack/react-router';
+import {
+  createRootRoute,
+  HeadContent,
+  Link,
+  Outlet,
+  Scripts,
+} from "@tanstack/react-router";
 
-import { Button } from '@hotel/ui';
+import { Button } from "@hotel/ui";
 
-import { AuthProvider, useAuth } from '../lib/auth.js';
-import appCss from '../styles/app.css?url';
+import { AuthProvider, useAuth } from "../lib/auth.js";
+import appCss from "../styles/app.css?url";
 
 export const Route = createRootRoute({
   head: () => ({
     meta: [
-      { charSet: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'Hotel Booking' },
+      { charSet: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { title: "Hotel Booking" },
     ],
-    links: [{ rel: 'stylesheet', href: appCss }],
+    links: [{ rel: "stylesheet", href: appCss }],
   }),
   component: RootComponent,
   notFoundComponent: NotFound,
@@ -22,7 +28,9 @@ function NotFound() {
   return (
     <div className="flex flex-col items-center gap-4 py-16 text-center">
       <h1 className="text-2xl font-semibold">Page not found</h1>
-      <p className="text-muted-foreground">The page you're looking for doesn't exist.</p>
+      <p className="text-muted-foreground">
+        The page you're looking for doesn't exist.
+      </p>
       <Button asChild>
         <Link to="/">Back to search</Link>
       </Button>
@@ -65,7 +73,11 @@ function SiteHeader() {
                 My bookings
               </Link>
               <span className="text-muted-foreground">{user.fullName}</span>
-              <button type="button" onClick={logout} className="hover:underline">
+              <button
+                type="button"
+                onClick={logout}
+                className="hover:underline"
+              >
                 Log out
               </button>
             </>

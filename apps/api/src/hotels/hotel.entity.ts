@@ -1,10 +1,10 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
-import { RoomType } from './room-type.entity.js';
+import { RoomType } from "./room-type.entity.js";
 
-@Entity('hotels')
+@Entity("hotels")
 export class Hotel {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   id!: string;
 
   @Column()
@@ -16,13 +16,13 @@ export class Hotel {
   @Column()
   address!: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: "text" })
   description!: string;
 
-  @Column({ type: 'int', default: 3 })
+  @Column({ type: "int", default: 3 })
   starRating!: number;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: "text", nullable: true })
   imageUrl!: string | null;
 
   @OneToMany(() => RoomType, (roomType) => roomType.hotel)

@@ -1,10 +1,10 @@
-import type { Booking as BookingDto } from '@hotel/shared-types';
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import type { Booking as BookingDto } from "@hotel/shared-types";
+import { BadRequestException, Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 
-import { HotelsService } from '../hotels/hotels.service.js';
-import { Booking } from './booking.entity.js';
+import { HotelsService } from "../hotels/hotels.service.js";
+import { Booking } from "./booking.entity.js";
 
 function toDto(booking: Booking): BookingDto {
   return {
@@ -34,7 +34,8 @@ export interface CreateBookingInput {
 @Injectable()
 export class BookingsService {
   constructor(
-    @InjectRepository(Booking) private readonly bookingsRepo: Repository<Booking>,
+    @InjectRepository(Booking)
+    private readonly bookingsRepo: Repository<Booking>,
     private readonly hotelsService: HotelsService,
   ) {}
 
@@ -42,10 +43,12 @@ export class BookingsService {
     const roomType = await this.hotelsService.findRoomType(input.roomTypeId);
 
     if (new Date(input.checkOut) <= new Date(input.checkIn)) {
-      throw new BadRequestException('checkOut must be after checkIn');
+      throw new BadRequestException("checkOut must be after checkIn");
     }
     if (input.guests < 1 || input.guests > roomType.maxGuests) {
-      throw new BadRequestException(`guests must be between 1 and ${roomType.maxGuests}`);
+      throw new BadRequestException(
+        `guests must be between 1 and ${roomType.maxGuests}`,
+      );
     }
 
     const availability = await this.hotelsService.checkAvailability(
@@ -53,13 +56,18 @@ export class BookingsService {
       input.checkIn,
       input.checkOut,
     );
-    const thisRoomType = availability.find((entry) => entry.roomType.id === roomType.id);
+    const thisRoomType = availability.find(
+      (entry) => entry.roomType.id === roomType.id,
+    );
     if (!thisRoomType || thisRoomType.availableRooms < 1) {
-      throw new BadRequestException('No rooms of this type are available for the selected dates');
+      throw new BadRequestException(
+        "No rooms of this type are available for the selected dates",
+      );
     }
 
     const nights = Math.ceil(
-      (new Date(input.checkOut).getTime() - new Date(input.checkIn).getTime()) / (1000 * 60 * 60 * 24),
+      (new Date(input.checkOut).getTime() - new Date(input.checkIn).getTime()) /
+        (1000 * 60 * 60 * 24),
     );
 
     const booking = this.bookingsRepo.create({
@@ -69,7 +77,7 @@ export class BookingsService {
       checkOut: input.checkOut,
       guests: input.guests,
       totalPrice: nights * roomType.pricePerNight,
-      status: 'confirmed',
+      status: "confirmed",
     });
 
     const saved = await this.bookingsRepo.save(booking);
@@ -81,7 +89,7 @@ export class BookingsService {
     const bookings = await this.bookingsRepo.find({
       where: { userId },
       relations: { roomType: { hotel: true } },
-      order: { createdAt: 'DESC' },
+      order: { createdAt: "DESC" },
     });
     return bookings.map(toDto);
   }

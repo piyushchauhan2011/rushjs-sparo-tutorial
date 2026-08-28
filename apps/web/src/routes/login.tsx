@@ -1,19 +1,27 @@
-import { ApiError } from '@hotel/api-client';
-import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '@hotel/ui';
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
-import * as React from 'react';
+import { ApiError } from "@hotel/api-client";
+import {
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  Input,
+  Label,
+} from "@hotel/ui";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import * as React from "react";
 
-import { useAuth } from '../lib/auth.js';
+import { useAuth } from "../lib/auth.js";
 
-export const Route = createFileRoute('/login')({
+export const Route = createFileRoute("/login")({
   component: LoginPage,
 });
 
 function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
@@ -23,9 +31,9 @@ function LoginPage() {
     setError(null);
     try {
       await login(email, password);
-      void navigate({ to: '/' });
+      void navigate({ to: "/" });
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Failed to log in');
+      setError(err instanceof ApiError ? err.message : "Failed to log in");
     } finally {
       setIsSubmitting(false);
     }
@@ -40,7 +48,13 @@ function LoginPage() {
         <form onSubmit={onSubmit} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+            <Input
+              id="email"
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </div>
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="password">Password</Label>
@@ -57,7 +71,7 @@ function LoginPage() {
             Log in
           </Button>
           <p className="text-center text-sm text-muted-foreground">
-            No account?{' '}
+            No account?{" "}
             <Link to="/register" className="underline">
               Register
             </Link>

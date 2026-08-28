@@ -47,9 +47,27 @@ make dev     # start the API and web dev servers (watch mode)
 the API can't boot without it and a missing database otherwise shows up as an
 opaque SSR "fetch failed" in the browser rather than a useful error.
 
-Other useful targets: `make build`, `make rebuild`, `make lint`, `make seed`,
-`make api` / `make web` (run one dev server), `make db-reset`, `make clean`,
-`make up` / `make down` (full Docker stack).
+Other useful targets: `make build`, `make rebuild`, `make lint`, `make format`,
+`make seed`, `make api` / `make web` (run one dev server), `make db-reset`,
+`make clean`, `make up` / `make down` (full Docker stack).
+
+### Formatting
+
+Prettier formats the whole repo. It's installed through a Rush
+[autoinstaller](https://rushjs.io/pages/maintainer/autoinstallers/)
+(`common/autoinstallers/rush-prettier`) rather than as a dependency of each
+project, so it's available without any project depending on it:
+
+```bash
+make format        # rewrite files          (rush format)
+make format-check  # fail if unformatted    (rush format:check)
+make check         # format-check + lint + build, the way CI runs it
+```
+
+Settings live in `.prettierrc.json` (Prettier defaults) and `.prettierignore`.
+Generated files — Rush's `common/scripts/`, `common/config/rush/`, lockfiles and
+`routeTree.gen.ts` — are excluded, since reformatting them just creates noise
+that gets overwritten the next time they're regenerated.
 
 <details>
 <summary>The same steps without <code>make</code></summary>

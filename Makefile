@@ -9,8 +9,8 @@ COMPOSE := docker compose
 
 .DEFAULT_GOAL := help
 
-.PHONY: help setup install build rebuild lint dev db-up db-wait db-down db-reset \
-        seed api web up down logs clean
+.PHONY: help setup install build rebuild lint format format-check check dev \
+        db-up db-wait db-down db-reset seed api web up down logs clean env
 
 help: ## Show available commands
 	@echo "Hotel Booking Monorepo"
@@ -44,6 +44,14 @@ rebuild: ## Force a full rebuild of all projects
 
 lint: ## Run ESLint across all projects
 	$(RUSH) lint
+
+format: ## Reformat all source files with Prettier
+	$(RUSH) format
+
+format-check: ## Fail if any file is not Prettier-formatted (CI)
+	$(RUSH) format:check
+
+check: format-check lint build ## Run every check the way CI would
 
 ## --- Development -----------------------------------------------------------
 

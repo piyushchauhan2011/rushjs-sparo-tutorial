@@ -1,27 +1,26 @@
 name: CI
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 2
-      - name: Git config user
-        uses: snow-actions/git-config-user@v1.0.0
+      - uses: actions/setup-node@v4
         with:
-          name: # Service Account's Name
-          email: # Service Account's Email Address
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - name: Verify Change Logs
-        run: node common/scripts/install-run-rush.js change --verify
-      - name: Rush Install
+          # Must satisfy "nodeSupportedVersionRange" in rush.json (>=20.9.0 <25).
+          # TypeORM 1.x also requires Node 20+.
+          node-version: 22
+      - name: Rush install
         run: node common/scripts/install-run-rush.js install
+      - name: Check formatting
+        run: node common/scripts/install-run-rush.js format:check
+      - name: Lint
+        run: node common/scripts/install-run-rush.js lint
       - name: Rush rebuild
         run: node common/scripts/install-run-rush.js rebuild --verbose --production

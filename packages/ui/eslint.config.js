@@ -1,3 +1,3 @@
-import reactConfig from '@hotel/eslint-config/react';
+import reactConfig from "@hotel/eslint-config/react";
 
 export default reactConfig;

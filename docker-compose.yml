@@ -6,11 +6,11 @@ services:
       POSTGRES_PASSWORD: hotel
       POSTGRES_DB: hotel
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U hotel -d hotel']
+      test: ["CMD-SHELL", "pg_isready -U hotel -d hotel"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -25,7 +25,7 @@ services:
       PORT: 3001
       WEB_ORIGIN: http://localhost:3000
     ports:
-      - '3001:3001'
+      - "3001:3001"
     depends_on:
       postgres:
         condition: service_healthy
@@ -41,7 +41,7 @@ services:
       # reach the api service by its Docker Compose network name, not "localhost".
       API_INTERNAL_URL: http://api:3001/api
     ports:
-      - '3000:3000'
+      - "3000:3000"
     depends_on:
       - api
 

@@ -1,8 +1,8 @@
-import tailwindcss from '@tailwindcss/vite';
-import { tanstackStart } from '@tanstack/react-start/plugin/vite';
-import viteReact from '@vitejs/plugin-react';
-import { nitro } from 'nitro/vite';
-import { defineConfig } from 'vite';
+import tailwindcss from "@tailwindcss/vite";
+import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import viteReact from "@vitejs/plugin-react";
+import { nitro } from "nitro/vite";
+import { defineConfig } from "vite";
 
 export default defineConfig(({ command }) => ({
   server: { port: 3000 },
@@ -16,7 +16,7 @@ export default defineConfig(({ command }) => ({
     // runner fails to resolve @tanstack/react-start's default dev entry (a beta-package bug,
     // not a config issue — `vite dev` works fine without it since TanStack Start's own dev
     // server doesn't need a Node adapter).
-    ...(command === 'build' ? [nitro()] : []),
+    ...(command === "build" ? [nitro()] : []),
     viteReact(),
   ],
 }));
