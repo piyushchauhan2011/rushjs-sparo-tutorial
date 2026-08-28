@@ -25,4 +25,7 @@ jobs:
       - name: Typecheck
         run: node common/scripts/install-run-rush.js typecheck
       - name: Rush rebuild
-        run: node common/scripts/install-run-rush.js rebuild --verbose --production
+        # No "--production": it is not a built-in Rush parameter (it would have to
+        # be declared under "parameters" in common/config/rush/command-line.json),
+        # and Rush 5 rejects it with "Unrecognized arguments: --production".
+        run: node common/scripts/install-run-rush.js rebuild --verbose

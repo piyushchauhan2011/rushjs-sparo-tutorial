@@ -3,7 +3,11 @@
   "compilerOptions": {
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "outDir": "dist",
+    // No "outDir": like @hotel/shared-types and @hotel/ui, this package is
+    // consumed from source (package.json "main"/"types" point at src/index.ts)
+    // and its "build" script only type-checks. Its one consumer is apps/web,
+    // whose Vite build compiles workspace TypeScript directly. See
+    // packages/shared-types/tsconfig.json for why the dist/ handoff broke CI.
     "rootDir": "src",
     // This package only uses Web APIs (fetch, RequestInit, URLSearchParams) and
     // runs in the browser as well as during SSR, so it declares the DOM lib

@@ -25,6 +25,15 @@ packages/
   typescript-config/   shared tsconfig bases
 ```
 
+The three library packages (`ui`, `shared-types`, `api-client`) are consumed from
+source: their `main`/`types` point at `src/index.ts` and their `build` script only
+runs `tsc --noEmit`. Nothing publishes them; `shared-types` exports types only (every
+import of it is an `import type`, erased at compile time), and Vite compiles the other
+two straight from source into the web bundle. A `dist/` handoff would buy nothing —
+and it actively broke CI, where `rush typecheck` runs before any build and so could
+never produce the `.d.ts` files its own type check needed. `apps/api` and `apps/web`
+are the only projects that emit build output.
+
 ## Prerequisites
 
 - Node.js ≥20 (repo pins `nodeSupportedVersionRange` to `>=20.9.0 <25.0.0` in `rush.json`)
