@@ -12,11 +12,8 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "outDir": "dist",
-    // `composite: true` (inherited from base.json) silently breaks `tsc --watch` emission —
-    // it reports "0 errors" but writes no files — which breaks `nest start --watch`. Nest's
-    // own build/watch tooling doesn't use TS project references, so composite mode buys
-    // nothing here; disable it the same way react.json does.
-    "composite": false,
+    // This is an application, not a library — nothing imports its types, so skip .d.ts.
+    "declaration": false,
     "declarationMap": false
   }
 }

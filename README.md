@@ -36,6 +36,24 @@ packages/
 
 ## Local development
 
+A `Makefile` wraps the common commands — run `make` on its own to list them.
+
+```bash
+make setup   # install deps, build, start Postgres, seed sample data
+make dev     # start the API and web dev servers (watch mode)
+```
+
+`make dev` always ensures Postgres is up and accepting connections first, because
+the API can't boot without it and a missing database otherwise shows up as an
+opaque SSR "fetch failed" in the browser rather than a useful error.
+
+Other useful targets: `make build`, `make rebuild`, `make lint`, `make seed`,
+`make api` / `make web` (run one dev server), `make db-reset`, `make clean`,
+`make up` / `make down` (full Docker stack).
+
+<details>
+<summary>The same steps without <code>make</code></summary>
+
 ```bash
 # 1. Install all workspace dependencies (resolves the pnpm lockfile across every project)
 node common/scripts/install-run-rush.js update
@@ -57,14 +75,15 @@ cd apps/api && node dist/seed.js && cd ../..
 node common/scripts/install-run-rush.js dev
 ```
 
+</details>
+
 - API: <http://localhost:3001/api>
 - Web: <http://localhost:3000>
 
 ## Docker Compose (full stack)
 
 ```bash
-cp .env.example .env
-docker compose up --build
+make up          # or: cp .env.example .env && docker compose up --build
 ```
 
 Brings up Postgres + API + Web together. Seed data once the stack is up:

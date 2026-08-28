@@ -46,8 +46,10 @@
 
 /* Tailwind v4 auto-detects source files across the project, but workspace packages
    consumed as raw source (packages/ui) live outside this app's root, so they need
-   to be added explicitly. */
-@source "../../../packages/ui/src";
+   to be added explicitly. The path is relative to THIS file (apps/web/src/styles/),
+   so reaching the repo root takes four levels — a wrong path here fails silently
+   and every class used only in packages/ui just goes missing from the output. */
+@source "../../../../packages/ui/src";
 
 body {
   background-color: var(--background);

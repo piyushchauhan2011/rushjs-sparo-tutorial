@@ -12,7 +12,12 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "composite": true,
+    // NOTE: deliberately no "composite"/"incremental" here. Composite projects write a
+    // tsconfig.tsbuildinfo *next to tsconfig.json* (not inside outDir), so deleting dist/
+    // leaves the buildinfo behind and the next `tsc` exits 0 having emitted nothing —
+    // a silent, very confusing no-op build. It breaks `tsc --watch` emit the same way.
+    // Rush already sequences builds across the dependency graph and skips unchanged
+    // projects, so TS project references would add nothing but that fragility.
     "resolveJsonModule": true,
     "isolatedModules": true
   }
