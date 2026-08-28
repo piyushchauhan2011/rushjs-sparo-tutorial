@@ -1,5 +1,7 @@
 import { createRootRoute, HeadContent, Link, Outlet, Scripts } from '@tanstack/react-router';
 
+import { Button } from '@hotel/ui';
+
 import { AuthProvider, useAuth } from '../lib/auth.js';
 import appCss from '../styles/app.css?url';
 
@@ -13,7 +15,20 @@ export const Route = createRootRoute({
     links: [{ rel: 'stylesheet', href: appCss }],
   }),
   component: RootComponent,
+  notFoundComponent: NotFound,
 });
+
+function NotFound() {
+  return (
+    <div className="flex flex-col items-center gap-4 py-16 text-center">
+      <h1 className="text-2xl font-semibold">Page not found</h1>
+      <p className="text-muted-foreground">The page you're looking for doesn't exist.</p>
+      <Button asChild>
+        <Link to="/">Back to search</Link>
+      </Button>
+    </div>
+  );
+}
 
 function RootComponent() {
   return (
