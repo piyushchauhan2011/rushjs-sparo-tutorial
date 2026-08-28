@@ -2,8 +2,11 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "./base.json",
   "compilerOptions": {
-    "module": "CommonJS",
-    "moduleResolution": "Node",
+    // module/moduleResolution are inherited as NodeNext/NodeNext from base.json — matches the
+    // explicit ".js" relative-import specifiers used throughout the source. The older
+    // module:CommonJS + moduleResolution:Node combo (Node's package.json has no "type" field,
+    // so NodeNext still emits CommonJS here) is deprecated as of TS 5.9 ("node10" resolution,
+    // removed in TS 7).
     "target": "ES2023",
     "lib": ["ES2023"],
     "emitDecoratorMetadata": true,

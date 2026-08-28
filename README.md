@@ -13,7 +13,7 @@ domain logic is intentionally minimal — the point is the monorepo tooling.
 
 ## Layout
 
-```
+```text
 apps/
   api/    NestJS + TypeORM REST API
   web/    TanStack Start frontend
@@ -57,8 +57,8 @@ cd apps/api && node dist/seed.js && cd ../..
 node common/scripts/install-run-rush.js dev
 ```
 
-- API: http://localhost:3001/api
-- Web: http://localhost:3000
+- API: <http://localhost:3001/api>
+- Web: <http://localhost:3000>
 
 ## Docker Compose (full stack)
 

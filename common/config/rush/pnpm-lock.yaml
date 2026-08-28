@@ -134,6 +134,9 @@ importers:
       '@hotel/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
+      '@types/node':
+        specifier: ^22.10.7
+        version: 22.20.1
       '@types/react':
         specifier: ^19.0.8
         version: 19.2.18
