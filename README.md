@@ -60,8 +60,13 @@ log to the same terminal with `[api]` / `[web]` prefixes, and Ctrl+C stops both.
 > after Ctrl+C.
 
 Other useful targets: `make build`, `make rebuild`, `make lint`, `make format`,
-`make seed`, `make api` / `make web` (run one dev server), `make db-reset`,
-`make clean`, `make up` / `make down` (full Docker stack).
+`make typecheck`, `make seed`, `make api` / `make web` (run one dev server),
+`make db-reset`, `make clean`, `make up` / `make down` (full Docker stack).
+
+`make check` runs format-check + lint + typecheck + build, the same sequence CI
+uses. `typecheck` is separate from `build` on purpose: Vite performs no type
+checking, so type errors in `apps/web` never fail `make build` — without it they
+surface only in your editor.
 
 ### Formatting
 

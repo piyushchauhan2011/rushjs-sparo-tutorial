@@ -9,7 +9,7 @@ COMPOSE := docker compose
 
 .DEFAULT_GOAL := help
 
-.PHONY: help setup install build rebuild lint format format-check check dev \
+.PHONY: help setup install build rebuild lint format format-check check dev typecheck \
         db-up db-wait db-down db-reset seed api web up down logs clean env
 
 help: ## Show available commands
@@ -51,7 +51,12 @@ format: ## Reformat all source files with Prettier
 format-check: ## Fail if any file is not Prettier-formatted (CI)
 	$(RUSH) format:check
 
-check: format-check lint build ## Run every check the way CI would
+# Vite doesn't type-check during `build`, so apps/web type errors never reach
+# `make build`. This runs tsc explicitly everywhere.
+typecheck: ## Type-check every project (tsc --noEmit)
+	$(RUSH) typecheck
+
+check: format-check lint typecheck build ## Run every check the way CI would
 
 ## --- Development -----------------------------------------------------------
 

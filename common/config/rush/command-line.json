@@ -47,6 +47,13 @@
     },
     {
       "commandKind": "bulk",
+      "name": "typecheck",
+      "summary": "Type-check every project with tsc --noEmit",
+      "description": "Vite does not type-check during `build`, so type errors in apps/web are invisible to `rush build`. This runs tsc explicitly across every project so CI catches what the editor would otherwise be the first to notice.",
+      "enableParallelism": true
+    },
+    {
+      "commandKind": "bulk",
       "name": "seed",
       "summary": "Seed the local Postgres database with sample hotel data",
       "enableParallelism": true,

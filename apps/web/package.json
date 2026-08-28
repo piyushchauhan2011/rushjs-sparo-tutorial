@@ -8,6 +8,7 @@
     "dev": "vite dev --port 3000",
     "build": "vite build",
     "start": "node .output/server/index.mjs",
+    "typecheck": "tsc -p . --noEmit",
     "lint": "eslint . --max-warnings 0",
     "test": "echo \"no tests\" && exit 0"
   },

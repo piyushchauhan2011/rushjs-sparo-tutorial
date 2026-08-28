@@ -8,6 +8,7 @@
   "types": "src/index.ts",
   "scripts": {
     "build": "tsc -p . --noEmit",
+    "typecheck": "tsc -p . --noEmit",
     "lint": "eslint . --max-warnings 0",
     "test": "echo \"no tests\" && exit 0"
   },

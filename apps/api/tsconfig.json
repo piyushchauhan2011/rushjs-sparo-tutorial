@@ -2,7 +2,13 @@
   "extends": "@hotel/typescript-config/nestjs.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    // src/seed.ts uses process.env and process.exit. Listed explicitly for the
+    // same reason as apps/web: relying on TypeScript's automatic scan of
+    // node_modules/@types resolved differently in `tsc` and in the editor's
+    // TypeScript server. Types reached through imports (@nestjs/*, express,
+    // passport-jwt, reflect-metadata) are unaffected by this field.
+    "types": ["node"]
   },
   "include": ["src"]
 }

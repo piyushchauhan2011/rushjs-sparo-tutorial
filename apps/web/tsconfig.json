@@ -3,7 +3,15 @@
   "compilerOptions": {
     "paths": {
       "~/*": ["./src/*"]
-    }
+    },
+    // src/lib/api.ts reads process.env.API_INTERNAL_URL on the SSR path, so this
+    // project needs Node's globals. Listing them explicitly rather than letting
+    // TypeScript auto-scan node_modules/@types keeps `tsc` and the editor's
+    // TypeScript server in agreement — auto-inclusion resolved inconsistently
+    // between the two. Types reached through imports (react, react-dom) and
+    // through the triple-slash reference in src/vite-env.d.ts (vite/client) are
+    // unaffected by this field.
+    "types": ["node"]
   },
   "include": ["src"]
 }

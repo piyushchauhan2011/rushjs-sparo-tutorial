@@ -8,6 +8,7 @@
     "dev": "nest start --watch",
     "start": "node dist/main.js",
     "seed": "node dist/seed.js",
+    "typecheck": "tsc -p . --noEmit",
     "lint": "eslint . --max-warnings 0",
     "test": "echo \"no tests\" && exit 0"
   },

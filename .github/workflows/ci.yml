@@ -22,5 +22,7 @@ jobs:
         run: node common/scripts/install-run-rush.js format:check
       - name: Lint
         run: node common/scripts/install-run-rush.js lint
+      - name: Typecheck
+        run: node common/scripts/install-run-rush.js typecheck
       - name: Rush rebuild
         run: node common/scripts/install-run-rush.js rebuild --verbose --production
