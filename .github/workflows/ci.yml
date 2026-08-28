@@ -29,3 +29,9 @@ jobs:
         # be declared under "parameters" in common/config/rush/command-line.json),
         # and Rush 5 rejects it with "Unrecognized arguments: --production".
         run: node common/scripts/install-run-rush.js rebuild --verbose
+      - name: Verify the checked-in route tree matches the routes
+        # The rebuild above re-runs TanStack Start's route generator, so any drift
+        # between apps/web/src/routes/ and the committed routeTree.gen.ts shows up
+        # here as a dirty working tree. See the note in .gitignore for why that file
+        # is committed rather than generated on demand.
+        run: git diff --exit-code -- apps/web/src/routeTree.gen.ts

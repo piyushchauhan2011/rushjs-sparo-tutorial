@@ -77,6 +77,13 @@ uses. `typecheck` is separate from `build` on purpose: Vite performs no type
 checking, so type errors in `apps/web` never fail `make build` — without it they
 surface only in your editor.
 
+Because `typecheck` runs before anything is built, `apps/web/src/routeTree.gen.ts`
+is committed even though TanStack Start's Vite plugin generates it: `src/router.tsx`
+imports it, and at typecheck time nothing has produced it yet. Regenerate it by
+running the app (`make dev`) or `make rebuild`, and commit the result alongside any
+change under `apps/web/src/routes/` — CI re-runs the generator during the build and
+fails if the committed copy has drifted.
+
 ### Formatting
 
 Prettier formats the whole repo. It's installed through a Rush
