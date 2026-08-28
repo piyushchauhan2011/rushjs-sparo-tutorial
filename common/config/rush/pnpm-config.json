@@ -82,7 +82,22 @@
    *
    * The default value is 0 (disabled).
    */
-  // "minimumReleaseAgeMinutes": 1440,
+  /**
+   * Set explicitly rather than left to PNPM's built-in default so that every
+   * environment applies the same policy. When it is implicit, `pnpm install`
+   * quietly appends an entry to `minimumReleaseAgeExclude` in the *generated*
+   * common/temp/pnpm-workspace.yaml whenever a dependency is too new. That file
+   * is both gitignored and dockerignored, so the exemption exists only on the
+   * machine that ran the install: local builds keep working while a fresh clone,
+   * CI, or `docker compose build` fails the lockfile verification. Keeping the
+   * value here makes the behaviour identical and reviewable everywhere.
+   *
+   * Consequence worth knowing: a dependency published less than a day ago will
+   * fail installs until it ages past the window. Pin such a package to an older
+   * release (as apps/web does for @vitejs/plugin-react) or add a deliberate
+   * entry to "minimumReleaseAgeExclude" below.
+   */
+  "minimumReleaseAgeMinutes": 1440,
 
   /**
    * An array of package names or patterns to exclude from the minimumReleaseAgeMinutes check.

@@ -78,7 +78,7 @@ project, so it's available without any project depending on it:
 ```bash
 make format        # rewrite files          (rush format)
 make format-check  # fail if unformatted    (rush format:check)
-make check         # format-check + lint + build, the way CI runs it
+make check         # format-check + lint + typecheck + build, as CI runs it
 ```
 
 Settings live in `.prettierrc.json` (Prettier defaults) and `.prettierignore`.
@@ -106,7 +106,7 @@ cp apps/web/.env.example apps/web/.env
 # 5. Seed sample hotels/room types (runs the compiled dist/seed.js from step 2)
 cd apps/api && node dist/seed.js && cd ../..
 
-# 6. Run both dev servers in parallel (custom Rush bulk command, see common/config/rush/command-line.json)
+# 6. Run both dev servers in parallel (custom Rush global command, see common/config/rush/command-line.json)
 node common/scripts/install-run-rush.js dev
 ```
 
@@ -126,6 +126,21 @@ Brings up Postgres + API + Web together. Seed data once the stack is up:
 ```bash
 docker compose exec api node dist/seed.js
 ```
+
+### A note on very new dependencies
+
+PNPM 11 enforces a supply-chain policy that refuses packages published within the
+last day (`minimumReleaseAgeMinutes` in `common/config/rush/pnpm-config.json`).
+It's set explicitly there so every environment applies the same rule — left
+implicit, `pnpm install` quietly writes an exemption into the _generated_
+`common/temp/pnpm-workspace.yaml`, which is gitignored and dockerignored, so
+local installs keep working while a fresh clone, CI, or `docker compose build`
+fails lockfile verification.
+
+If an install fails with `ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION`, the dependency
+is simply too new. Either pin it to an older release (as `apps/web` does with
+`@vitejs/plugin-react`) and run `rush update --full`, or add a deliberate entry
+to `minimumReleaseAgeExclude` in `pnpm-config.json`.
 
 The Dockerfiles use a pragmatic single-stage build (see comments in `apps/api/Dockerfile` /
 `apps/web/Dockerfile`): they install and build the whole Rush workspace inside the image, trading
