@@ -55,18 +55,45 @@ make dev     # start the API and web dev servers (watch mode)
 `make dev` always ensures Postgres is up and accepting connections first, because
 the API can't boot without it and a missing database otherwise shows up as an
 opaque SSR "fetch failed" in the browser rather than a useful error. Both servers
-log to the same terminal with `[api]` / `[web]` prefixes, and Ctrl+C stops both.
+log to the same terminal and Ctrl+C stops both.
+
+Each server is started through `rushx dev`, the per-project task runner
+[Rush documents for everyday development](https://rushjs.io/pages/developer/everyday_commands/)
+— it's `npm run` with Rush's version selector in front of it. To work on one
+project, that's all you need:
+
+```bash
+cd apps/web
+rushx dev        # or: node ../../common/scripts/install-run-rushx.js dev
+```
+
+`make api` and `make web` are just wrappers around exactly that (plus the
+Postgres check for the API).
+
+Neither server clears the terminal. `nest start --watch` runs `tsc --watch`,
+which by default wipes the screen _and_ the scrollback (`ESC[2J ESC[3J`) on every
+recompile — with both servers sharing one terminal that destroys the web
+server's output too, so the API's `dev` script passes `--preserveWatchOutput`.
+Vite doesn't clear today; `clearScreen: false` in `apps/web/vite.config.ts`
+keeps it that way.
 
 > **Why `dev` is a Rush _global_ command, not a _bulk_ one.** Bulk commands
 > stream one project's output at a time and buffer the rest until that operation
 > finishes. Two watch servers never finish, so a bulk `dev` prints only the first
 > one and silently swallows the second (its output goes to
 > `apps/<name>/rush-logs/*.dev.log` instead) — it looks like the second server
-> failed to start when it's actually running fine. The global command runs both
-> under `concurrently` instead. It also invokes each project's binary directly
-> rather than via `rushx`, because the extra `install-run-rushx → rushx → shell`
-> layers don't forward SIGINT, which left both servers orphaned on their ports
-> after Ctrl+C.
+> failed to start when it's actually running fine. The global command runs
+> `common/scripts/dev.js`, which starts both `rushx dev` processes itself.
+>
+> **Why that script spawns each server in its own process group.** `rushx dev`
+> expands to an `install-run-rushx → rushx → shell → server` chain. Signalling
+> only the leader PID kills the launcher and leaves the server alive, still
+> holding its port — which is what a supervisor like `concurrently` does, and why
+> this repo used to bypass `rushx` and invoke `nest`/`vite` directly. Signalling
+> the _group_ tears the whole chain down, so `dev.js` forwards SIGINT/SIGTERM to
+> each child's group and does the same if one server exits on its own. Running a
+> single `rushx dev` in a terminal needs none of this: Ctrl+C already signals the
+> whole foreground process group.
 
 Other useful targets: `make build`, `make rebuild`, `make lint`, `make format`,
 `make typecheck`, `make seed`, `make api` / `make web` (run one dev server),
@@ -124,6 +151,10 @@ cd apps/api && node dist/seed.js && cd ../..
 
 # 6. Run both dev servers in parallel (custom Rush global command, see common/config/rush/command-line.json)
 node common/scripts/install-run-rush.js dev
+
+# ...or run just one of them, the way rushjs.io documents:
+cd apps/api && node ../../common/scripts/install-run-rushx.js dev
+cd apps/web && node ../../common/scripts/install-run-rushx.js dev
 ```
 
 </details>

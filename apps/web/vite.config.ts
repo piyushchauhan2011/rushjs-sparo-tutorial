@@ -5,6 +5,10 @@ import { nitro } from "nitro/vite";
 import { defineConfig } from "vite";
 
 export default defineConfig(({ command }) => ({
+  // `rush dev` runs this server and the API's in one terminal, so anything that
+  // clears the screen also destroys the other server's output. Vite is not the
+  // one clearing today, but the option is free insurance if that changes.
+  clearScreen: false,
   server: { port: 3000 },
   resolve: { tsconfigPaths: true },
   plugins: [

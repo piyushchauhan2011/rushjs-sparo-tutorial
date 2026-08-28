@@ -23,6 +23,8 @@ common/config/rush/
 rush.json
 
 # Generated verbatim by Rush and rewritten on upgrade — reformatting them would
-# be undone the next time Rush regenerates them.
-common/scripts/
+# be undone the next time Rush regenerates them. dev.js is ours, not Rush's, so
+# it stays under the formatter.
+common/scripts/*
+!common/scripts/dev.js
 common/autoinstallers/*/pnpm-lock.yaml
