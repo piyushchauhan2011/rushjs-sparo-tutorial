@@ -11,7 +11,7 @@ import {
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import * as React from "react";
 
-import { useAuth } from "../lib/auth.js";
+import { useAuth } from "../lib/auth-context.js";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,

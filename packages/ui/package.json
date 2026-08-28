@@ -8,7 +8,7 @@
   "types": "src/index.ts",
   "scripts": {
     "build": "tsc -p . --noEmit",
-    "lint": "eslint .",
+    "lint": "eslint . --max-warnings 0",
     "test": "echo \"no tests\" && exit 0"
   },
   "dependencies": {

@@ -8,7 +8,8 @@ import {
 
 import { Button } from "@hotel/ui";
 
-import { AuthProvider, useAuth } from "../lib/auth.js";
+import { AuthProvider } from "../lib/auth.js";
+import { useAuth } from "../lib/auth-context.js";
 import appCss from "../styles/app.css?url";
 
 export const Route = createRootRoute({

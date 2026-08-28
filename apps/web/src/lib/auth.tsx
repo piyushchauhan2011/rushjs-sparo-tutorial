@@ -2,21 +2,8 @@ import type { AuthResponse, User } from "@hotel/shared-types";
 import * as React from "react";
 
 import { api } from "./api.js";
+import { AuthContext } from "./auth-context.js";
 import { clearSession, getStoredUser, storeSession } from "./token.js";
-
-interface AuthContextValue {
-  user: User | null;
-  isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  register: (
-    email: string,
-    password: string,
-    fullName: string,
-  ) => Promise<void>;
-  logout: () => void;
-}
-
-const AuthContext = React.createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = React.useState<User | null>(null);
@@ -52,12 +39,4 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       {children}
     </AuthContext.Provider>
   );
-}
-
-export function useAuth() {
-  const context = React.useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
 }

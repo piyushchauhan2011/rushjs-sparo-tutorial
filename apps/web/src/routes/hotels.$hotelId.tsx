@@ -19,7 +19,7 @@ import * as React from "react";
 
 import { ApiError } from "@hotel/api-client";
 import { api } from "../lib/api.js";
-import { useAuth } from "../lib/auth.js";
+import { useAuth } from "../lib/auth-context.js";
 
 interface SearchParams {
   checkIn?: string;

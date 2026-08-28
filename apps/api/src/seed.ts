@@ -110,7 +110,6 @@ async function main() {
 
   const existingCount = await hotelRepo.count();
   if (existingCount > 0) {
-    // eslint-disable-next-line no-console
     console.log(`Database already has ${existingCount} hotels, skipping seed.`);
     await dataSource.destroy();
     return;
@@ -125,13 +124,11 @@ async function main() {
     );
   }
 
-  // eslint-disable-next-line no-console
   console.log(`Seeded ${SAMPLE_HOTELS.length} hotels.`);
   await dataSource.destroy();
 }
 
 main().catch((error: unknown) => {
-  // eslint-disable-next-line no-console
   console.error(error);
   process.exit(1);
 });
