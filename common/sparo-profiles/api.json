@@ -1,0 +1,4 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/sparo/v1/sparo-profile.schema.json",
+  "selections": [{ "selector": "--to", "argument": "@hotel/api" }]
+}

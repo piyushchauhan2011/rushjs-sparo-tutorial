@@ -1,0 +1,36 @@
+{
+  "name": "@hotel/web",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev --port 3000",
+    "build": "vite build",
+    "start": "node .output/server/index.mjs",
+    "lint": "eslint .",
+    "test": "echo \"no tests\" && exit 0"
+  },
+  "dependencies": {
+    "@hotel/api-client": "workspace:*",
+    "@hotel/shared-types": "workspace:*",
+    "@hotel/ui": "workspace:*",
+    "@tailwindcss/vite": "^4.3.3",
+    "@tanstack/react-router": "^1.170.32",
+    "@tanstack/react-start": "^1.168.49",
+    "nitro": "3.0.260610-beta",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@hotel/eslint-config": "workspace:*",
+    "@hotel/typescript-config": "workspace:*",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "@vitejs/plugin-react": "^6.1.1",
+    "eslint": "^9.19.0",
+    "typescript": "^5.7.3",
+    "vite": "^8.2.2"
+  }
+}

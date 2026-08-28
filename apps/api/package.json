@@ -1,0 +1,45 @@
+{
+  "name": "@hotel/api",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "build": "nest build",
+    "dev": "nest start --watch",
+    "start": "node dist/main.js",
+    "seed": "node dist/seed.js",
+    "lint": "eslint .",
+    "test": "echo \"no tests\" && exit 0"
+  },
+  "dependencies": {
+    "@hotel/shared-types": "workspace:*",
+    "@nestjs/common": "^11.1.28",
+    "@nestjs/config": "^4.0.0",
+    "@nestjs/core": "^11.1.28",
+    "@nestjs/jwt": "^11.0.0",
+    "@nestjs/passport": "^11.0.5",
+    "@nestjs/platform-express": "^11.1.28",
+    "@nestjs/typeorm": "^11.0.3",
+    "bcryptjs": "^3.0.3",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
+    "dotenv": "^16.4.7",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "pg": "^8.13.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1",
+    "typeorm": "^1.1.0"
+  },
+  "devDependencies": {
+    "@hotel/eslint-config": "workspace:*",
+    "@hotel/typescript-config": "workspace:*",
+    "@nestjs/cli": "^11.0.0",
+    "@nestjs/schematics": "^11.0.0",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.7",
+    "@types/passport-jwt": "^4.0.1",
+    "eslint": "^9.19.0",
+    "typescript": "^5.7.3"
+  }
+}

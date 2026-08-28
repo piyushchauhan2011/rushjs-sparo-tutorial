@@ -1,0 +1,8 @@
+**/node_modules
+common/temp
+common/deploy
+**/dist
+**/.output
+**/.rush/temp
+.git
+*.log
