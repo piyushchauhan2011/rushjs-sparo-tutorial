@@ -4,7 +4,13 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    // This package only uses Web APIs (fetch, RequestInit, URLSearchParams) and
+    // runs in the browser as well as during SSR, so it declares the DOM lib
+    // directly. Previously those globals came from @types/node's ambient types
+    // being auto-included, which resolved inconsistently between `tsc` and the
+    // editor's TypeScript server.
+    "lib": ["ES2022", "DOM"]
   },
   "include": ["src"]
 }

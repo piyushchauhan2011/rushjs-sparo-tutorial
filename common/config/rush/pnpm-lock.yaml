@@ -168,9 +168,6 @@ importers:
       '@hotel/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
-      '@types/node':
-        specifier: ^22.10.7
-        version: 22.20.1
       eslint:
         specifier: ^9.19.0
         version: 9.39.5(jiti@2.7.0)
