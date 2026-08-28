@@ -45,7 +45,19 @@ make dev     # start the API and web dev servers (watch mode)
 
 `make dev` always ensures Postgres is up and accepting connections first, because
 the API can't boot without it and a missing database otherwise shows up as an
-opaque SSR "fetch failed" in the browser rather than a useful error.
+opaque SSR "fetch failed" in the browser rather than a useful error. Both servers
+log to the same terminal with `[api]` / `[web]` prefixes, and Ctrl+C stops both.
+
+> **Why `dev` is a Rush _global_ command, not a _bulk_ one.** Bulk commands
+> stream one project's output at a time and buffer the rest until that operation
+> finishes. Two watch servers never finish, so a bulk `dev` prints only the first
+> one and silently swallows the second (its output goes to
+> `apps/<name>/rush-logs/*.dev.log` instead) — it looks like the second server
+> failed to start when it's actually running fine. The global command runs both
+> under `concurrently` instead. It also invokes each project's binary directly
+> rather than via `rushx`, because the extra `install-run-rushx → rushx → shell`
+> layers don't forward SIGINT, which left both servers orphaned on their ports
+> after Ctrl+C.
 
 Other useful targets: `make build`, `make rebuild`, `make lint`, `make format`,
 `make seed`, `make api` / `make web` (run one dev server), `make db-reset`,

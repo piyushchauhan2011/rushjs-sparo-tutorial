@@ -63,11 +63,14 @@ dev: env db-wait ## Start the API and web dev servers (watch mode)
 	@echo "Web -> http://localhost:3000"
 	@$(RUSH) dev
 
+# These invoke the project binaries directly rather than going through `rushx`.
+# The install-run-rushx -> rushx -> shell chain does not forward SIGINT, so
+# Ctrl+C would leave the server orphaned still holding its port.
 api: env db-wait ## Start only the API dev server
-	@cd apps/api && node ../../common/scripts/install-run-rushx.js dev
+	@cd apps/api && node_modules/.bin/nest start --watch
 
 web: env ## Start only the web dev server
-	@cd apps/web && node ../../common/scripts/install-run-rushx.js dev
+	@cd apps/web && node_modules/.bin/vite dev --port 3000
 
 ## --- Database --------------------------------------------------------------
 
