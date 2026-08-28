@@ -66,10 +66,19 @@ jspm_packages/
 # next.js build output
 .next/
 
-# TanStack Start build output and generated route tree
+# TanStack Start build output
 .output/
 .vinxi/
-**/routeTree.gen.ts
+
+# NOTE: apps/web/src/routeTree.gen.ts is deliberately NOT ignored, even though the
+# TanStack Start Vite plugin generates it. src/router.tsx imports it, so `tsc` cannot
+# type-check apps/web without it — and `rush typecheck` runs before any build (Vite
+# does not type-check, which is the whole reason that command exists), so nothing has
+# generated it yet. Ignoring it meant CI failed with 14 errors cascading from TS2307
+# "Cannot find module './routeTree.gen'", while every dev machine passed against a
+# copy left behind by an earlier build. Committing it is also what the upstream
+# TanStack templates do. CI re-runs the generator during `rush rebuild` and fails on
+# any diff, so a stale checked-in copy cannot go unnoticed.
 
 # Docusaurus cache and generated files
 .docusaurus/

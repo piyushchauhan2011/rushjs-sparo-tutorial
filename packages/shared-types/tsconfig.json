@@ -3,7 +3,14 @@
   "compilerOptions": {
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "outDir": "dist",
+    // No "outDir": this package is consumed from source (package.json points
+    // "main"/"types" at src/index.ts, like @hotel/ui), so its "build" script is
+    // a type check and emits nothing. Its exports are types only, so every
+    // consumer's `import type` is erased and nothing needs it at runtime.
+    // Emitting to dist/ made consumers depend on a build artifact that CI's
+    // `rush typecheck` step — which runs before any build and only ever calls
+    // `tsc --noEmit` — could never produce: TS2307 in CI, invisible locally
+    // where a stale gitignored dist/ was still lying around.
     "rootDir": "src"
   },
   "include": ["src"]
