@@ -123,6 +123,15 @@ dist/
 dist-storybook/
 *.tsbuildinfo
 
+# The "lib/" rule above comes from Rush's template, where it means a project's
+# compiled output (the Heft convention). It also matches *source* folders named
+# "lib" — such as apps/web/src/lib and packages/ui/src/lib — which silently kept
+# real source files out of Git. Nothing in this repo compiles to "lib/" (we use
+# "dist/" and ".output/"), so re-include any "lib" folder that lives under a
+# project's src/. Prettier reads .gitignore too, so this also un-skips them for
+# formatting.
+!**/src/lib/
+
 # Heft temporary files
 .cache/
 .heft/

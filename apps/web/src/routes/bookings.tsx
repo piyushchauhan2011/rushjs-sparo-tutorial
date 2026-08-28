@@ -11,11 +11,22 @@ import {
   TableHeader,
   TableRow,
 } from "@hotel/ui";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 import { api } from "../lib/api.js";
+import { getStoredToken } from "../lib/token.js";
 
 export const Route = createFileRoute("/bookings")({
+  // The JWT lives in localStorage, which the server cannot read. With SSR on,
+  // this route's loader ran on the server with no token and the API answered
+  // 401, so the page failed with a 500 before the browser ever got involved.
+  // Rendering it client-side means the loader runs where the token exists.
+  ssr: false,
+  beforeLoad: () => {
+    if (!getStoredToken()) {
+      throw redirect({ to: "/login" });
+    }
+  },
   loader: () => api.myBookings(),
   component: BookingsPage,
 });

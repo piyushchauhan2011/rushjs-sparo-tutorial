@@ -22,7 +22,27 @@ export const Route = createRootRoute({
   }),
   component: RootComponent,
   notFoundComponent: NotFound,
+  errorComponent: ErrorPage,
 });
+
+function ErrorPage({ error }: { error: Error }) {
+  // Without this, any loader failure renders TanStack Router's default boundary,
+  // which dumps a raw stack trace. The most common cause in local development is
+  // simply that the API isn't running (`make dev` starts it alongside Postgres).
+  return (
+    <div className="flex flex-col items-center gap-4 py-16 text-center">
+      <h1 className="text-2xl font-semibold">Something went wrong</h1>
+      <p className="text-muted-foreground">
+        {error.message === "Failed to fetch" || error.message === "fetch failed"
+          ? "Couldn't reach the API. Is it running on http://localhost:3001?"
+          : error.message}
+      </p>
+      <Button asChild>
+        <Link to="/">Back to search</Link>
+      </Button>
+    </div>
+  );
+}
 
 function NotFound() {
   return (
