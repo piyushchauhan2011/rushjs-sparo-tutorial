@@ -370,7 +370,7 @@
       "packageName": "@hotel/web",
       "projectFolder": "apps/web",
       "shouldPublish": false
-    },
+    }
     // {
     //   /**
     //    * The NPM package name of the project (must match package.json)
