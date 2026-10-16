@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img">
+  <title>Results card: big monorepos slow down in three places, and sparse checkout sped up Git</title>
+  <desc>A shareable summary card. A problem line reads "Big monorepos get slow in three places: clone, install, build", followed by the headline "Sparse checkout made Git 2x faster and cut the working tree by 97%". Four tiles give before-and-after figures with the improvement: clone 270 to 148 ms, 1.8x faster; .git size on disk 1,836 to 924 KiB, 50% smaller; git status 49 to 13 ms, 3.8x faster; files on disk 3,328 to 85, 97% fewer. A strip underneath notes that install time showed no measurable change, 50.0 seconds against 50.8 seconds with the same 1.20 GiB on disk. A footnote says the fixture is synthetic with local clones, so the numbers are directional.</desc>
+  <rect x="0" y="0" width="1200" height="675" fill="#ffffff"/>
+  <text x="64" y="46" font-family="system-ui, sans-serif" font-size="15" fill="#94a3b8">RUSH + SPARO  ·  407-PROJECT FIXTURE  ·  BEFORE  →  AFTER</text>
+  <text x="64" y="90" font-family="system-ui, sans-serif" font-size="20" fill="#94a3b8">Big monorepos get slow in three places: clone, install, build.</text>
+  <text x="64" y="142" font-family="system-ui, sans-serif" font-size="42" font-weight="bold" fill="#0f172a">Sparse checkout made Git 2× faster</text>
+  <text x="64" y="188" font-family="system-ui, sans-serif" font-size="42" font-weight="bold" fill="#2563eb">and cut the working tree by 97%</text>
+  <rect x="64" y="224" width="524" height="112" rx="8" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="90" y="262" font-family="system-ui, sans-serif" font-size="15" fill="#94a3b8">clone, median of 5 · 1.8× faster</text>
+  <text x="90" y="314" font-family="system-ui, sans-serif" font-size="34" font-weight="bold" fill="#0f172a">270 → 148 ms</text>
+  <rect x="612" y="224" width="524" height="112" rx="8" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="638" y="262" font-family="system-ui, sans-serif" font-size="15" fill="#94a3b8">.git size on disk · 50% smaller</text>
+  <text x="638" y="314" font-family="system-ui, sans-serif" font-size="34" font-weight="bold" fill="#0f172a">1,836 → 924 KiB</text>
+  <rect x="64" y="352" width="524" height="112" rx="8" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="90" y="390" font-family="system-ui, sans-serif" font-size="15" fill="#94a3b8">git status (median of 5) · 3.8× faster</text>
+  <text x="90" y="442" font-family="system-ui, sans-serif" font-size="34" font-weight="bold" fill="#0f172a">49 → 13 ms</text>
+  <rect x="612" y="352" width="524" height="112" rx="8" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="638" y="390" font-family="system-ui, sans-serif" font-size="15" fill="#94a3b8">files on disk · 97% fewer</text>
+  <text x="638" y="442" font-family="system-ui, sans-serif" font-size="34" font-weight="bold" fill="#0f172a">3,328 → 85</text>
+  <rect x="64" y="494" width="1072" height="68" rx="8" fill="#f1f5f9" stroke="#2563eb" stroke-width="2"/>
+  <text x="92" y="536" font-family="system-ui, sans-serif" font-size="22" font-weight="bold" fill="#0f172a">install time: no measurable change</text>
+  <text x="1108" y="536" font-family="system-ui, sans-serif" font-size="22" fill="#0f172a" text-anchor="end">50.0 s vs 50.8 s, same 1.20 GiB on disk</text>
+  <text x="64" y="604" font-family="system-ui, sans-serif" font-size="16" fill="#94a3b8">Synthetic 407-project fixture, clones over file:// on one machine. Directional, not a measurement of your repo.</text>
+</svg>

@@ -9,9 +9,9 @@ cover_image:
 **TL;DR**
 
 - A big monorepo gets slow in three places that fail independently: Git, the dependency install, and the build. A fix for one does nothing for the others.
-- Sparse checkout made a test repo of 407 projects clone twice as fast, halved `.git`, and cut `git status` from 76 ms to 13 ms.
-- Sparse checkout did not speed up the install at all, because Rush cannot install from a checkout that is missing project folders.
-- Selection flags cut a leaf-file rebuild from 407 projects to 4. A change to a widely-used package still rebuilds everything, because that is what the graph says.
+- Sparse checkout made a test repo of 407 projects clone twice as fast, halve `.git`, and cut `git status` from 49 ms to 13 ms.
+- Sparse checkout did not speed up the install at all: install cost is the dependency graph, not the number of files on disk.
+- On a cold CI runner, project selection cuts a one-line change from 407 projects to 4. On a warm laptop, Rush's input hashing already skipped them.
 - Most of this assumes you use npm, pnpm, or yarn. If you do not, the Rush half of the article does not apply to you.
 
 ## The problem
@@ -89,7 +89,7 @@ Because the selector is Rush's, the profile above materializes exactly the proje
 
 From a fresh clone the workflow is two commands: `sparo clone <remote-url>`, then `sparo checkout --profile web`. Two related commands are worth knowing. `sparo checkout --to` and `--from` add to the profiles already recorded instead of replacing them, and `--no-profile` clears the recording.
 
-One part never gets stripped. Sparo calls it the **skeleton**, and it includes the whole `common/` directory. That matters, because `common/` holds Rush's config, its scripts, and its autoinstallers. No profile can leave you with a checkout that cannot install or build.
+One part never gets stripped. Sparo calls it the **skeleton**, and it holds the whole `common/` directory plus every project's `package.json` and root-level config files. That is what makes Rush's install work from a sparse tree at all. A profile can still leave you unable to _build_ a project whose source it has not pulled.
 
 One caveat about the profiles in this repo. Both were written by hand, and their `$schema` points at a Microsoft-hosted URL. I checked that URL on 2026-10-16 and it returned HTTP 404. Sparo's own published schema at `https://tiktok.github.io/sparo/schemas/sparo-profile.schema.json` returned 200. The Microsoft URL is not an old location; it does not exist, and Sparo's docs never mention it. Run `sparo init-profile --profile web` to generate a template from your installed Sparo version.
 
@@ -124,19 +124,29 @@ If a tool needs a directory, name it:
 
 Three further problems come up in practice. The clone is blobless, so reading content Git has not fetched costs a network round trip. A repo-wide lint or a background IDE index will trigger exactly that. Sparo refuses to check out a profile that omits a folder with local edits, so stash or commit first. And `sparo-ci checkout` uses a **treeless** clone in CI rather than a blobless one. Anything that assumes directory listings are present will behave differently on a runner than on your laptop.
 
-### Sparse checkout fights the install
+### What sparse checkout cannot fix
 
-This is the finding I did not expect, and it changes how you should plan.
+Sparse checkout does not make the install cheaper. That is worth separating from a different question, because the two answers point in opposite directions.
 
-Rush and PNPM need every registered project's `package.json` to be on disk. A profile that omits project folders therefore cannot install. I hit three failures in a row on the 407-project test fixture:
+Can you install at all from a sparse tree? Not from an arbitrary one. Rush and PNPM need every registered project's `package.json` on disk, and a set that omits project folders does not have them. I built two by hand and both failed:
 
 - A cone set naming only the app and package folders leaves out `common/`, and `rush update` died in 0.29 s with `MODULE_NOT_FOUND` for `common/scripts/install-run-rush.js`. Cone mode includes root files and the directories you name, and nothing else.
-- Adding `common/` was not enough. Rush still needs every project's `package.json`, so the same command failed with `Could not find package.json for @hotel/eslint-config`.
-- A non-cone set that materializes all 408 `package.json` files plus `common/` does install, with 513 files on disk instead of 3,328. But `rush build --to @hotel/ui` then failed with `TS6053: File '@hotel/typescript-config/react.json' not found`, because the shared config packages were missing too.
+- Adding `common/` was not enough. The same command failed with `Could not find package.json for @hotel/eslint-config`.
+- A non-cone set that materializes all 408 `package.json` files plus `common/` does install, with 513 files on disk instead of 3,328. But `rush build --to @hotel/ui` then failed with `TS6053: File '@hotel/typescript-config/react.json' not found`.
 
-So the workable profile is narrower than "only the app I am working on". Keep every `package.json`, keep `common/`, keep the config packages, and sparsify only source directories. That is still the difference between 3,328 files and 513.
+Does Sparo hit that? No. I expected it to, and it does not, which is the most useful thing I learned here.
 
-The lever for install size is not the checkout. It is Rush's **filtered install**, which I cover in the next section. In the fixture, sparse checkout changed install time and install size by nothing measurable.
+Sparo's clone is not a general sparse set. It is a skeleton built for Rush: cone mode, all 408 `package.json` files, and every package's root-level files, so `tsconfig.json` and the shared `typescript-config` presets are all present. `common/` comes along too. `rush update` works in that tree, and `sparo checkout --profile web` adds the profile's folders without ever removing the skeleton.
+
+So the constraint above applies to hand-built sparse sets, including the two I demonstrated. Sparo is built around it, which is the point of the tool.
+
+Does the install get cheaper? No, and this is the part that matters at scale. Sparse checkout cut the working tree by 97% and moved the install median by less than 2%: 50.0 s against 50.8 s across 11 cold runs each. `common/temp` came out identical at 1.20 GiB. Install cost is the size of the dependency graph, not the number of files on disk, and the graph does not change when you check out fewer folders.
+
+Sparo's real limit is narrower and different in kind. You cannot **build** a project whose source the active profile has not pulled. Running `rush build --to @hotel/ui` against the bare skeleton fails with `TS18003: No inputs were found in config file`, because `packages/ui/src` is not on disk. The thing to size correctly is profile coverage, not the install.
+
+Two things cost me time while setting that up. `sparo clone` on a bare local path is accepted but silently drops the blob filter, because Git warns `--filter is ignored in local clones; use file:// instead`; pass a `file://` URL. And Sparo reads `rush.json` with a stricter JSONC parser than Rush does, so a trailing comma that Rush tolerates stopped the clone before it checked anything out.
+
+The lever for install size is not the checkout at all. It is Rush's **filtered install**, which the next section covers.
 
 ## Rush: the graph, the install, the selection
 
@@ -219,7 +229,7 @@ Subspaces are the other scaling feature this repo leaves switched off. A subspac
 
 ### Selection: build only what changed
 
-This is the half of Rush that keeps CI honest. Pass a project selector and Rush builds a subset.
+This is the half of Rush that decides what CI rebuilds. Pass a project selector and Rush builds a subset.
 
 ```bash
 rush build --to @hotel/web                 # @hotel/web and everything it depends on
@@ -263,50 +273,79 @@ Every project here sets `shouldPublish: false`, and `version-policies.json` is e
 
 ## What the numbers look like
 
-Six placeholders would have been a cop-out, so I built a fixture and measured it.
+I built a fixture and measured it, because estimating would have been worse than saying nothing.
 
-The fixture is this repo's working tree plus 400 generated packages. Each generated package has a `package.json`, a `tsconfig.json`, and six source files. The result is 407 registered projects and 3,328 tracked files, committed to a local bare remote of 1.7 MB, 5,785 objects, and a 1.32 MiB pack. Clones go over `file://`. The machine was an 8-core arm64 laptop running Node 24.22.0, Rush 5.181.0, and PNPM 11.5.1.
+The fixture is this repo's working tree plus 400 generated packages. Each generated package has a `package.json`, a `tsconfig.json`, and six source files. The result is 407 registered projects and 3,328 tracked files, committed to a local bare remote of 1.7 MB, 5,785 objects, and a 1.32 MiB pack. The machine was an 8-core arm64 laptop running Node 24.22.0, Rush 5.181.0, and PNPM 11.5.1.
 
-One trap cost me a wasted benchmark. A bare remote needs `uploadpack.allowFilter=true`. Without it, `git clone --filter=blob:none` prints `warning: filtering not recognized by server, ignoring` and quietly produces a full clone. Every blobless number below comes from after that setting.
+One setup detail cost me a wasted run. A bare remote needs `uploadpack.allowFilter=true`. Without it, `git clone --filter=blob:none` prints `warning: filtering not recognized by server, ignoring` and quietly produces a full clone. Every blobless number below comes from after that setting.
 
-**Baseline** is a plain `git clone` plus a full `rush rebuild`. **Optimised** is `git clone --filter=blob:none --sparse` followed by a cone-mode sparse set, plus selection-based builds. Timings are nearest-rank percentiles over the stated run count.
+Percentiles are nearest-rank over the stated run count, and every table names the tree it measured.
 
-| Metric                         | Baseline              | Optimised             |
-| ------------------------------ | --------------------- | --------------------- |
-| Clone wall time (p50, n=10)    | 284 ms                | 160 ms                |
-| `.git` on disk                 | 1,824 KiB             | 920 KiB               |
-| Files on disk                  | 3,328                 | 85                    |
-| `git status` (p50, n=50)       | 76 ms                 | 13 ms                 |
-| Cold `rush update` (p50, n=5)  | 46.5 s                | 41.9 s                |
-| `common/temp` after install    | 1.20 GiB              | 1.20 GiB              |
-| Build after a leaf-file change | 24.60 s, 407 projects | 1.04 s, 4 projects    |
-| Build after a hub-file change  | 24.60 s, 407 projects | 24.74 s, 401 projects |
+Two caveats before you read the numbers. The clones run over `file://` on one machine, so they measure Git's object and tree work rather than network transfer. Across a real network a sparse clone would look better than it does here, because the bytes it skips are the expensive part. And these measurements use several different trees, so read each table's heading.
 
-Four things in that table are worth reading twice.
+Both scripts are in this repo, so any of it can be rerun. `docs/bench/generate-fixture.sh` builds the fixture from a copy of the tutorial repo, and `docs/bench/benchmark.sh` runs the checkout, install, and build measurements and prints the tables.
+
+**Checkout**, measured on a cone-mode sparse set applied at clone time:
+
+| Metric                    | Full clone | Sparse  |
+| ------------------------- | ---------- | ------- |
+| Clone, median of 5        | 270 ms     | 148 ms  |
+| `.git` on disk            | 1,836 KiB  | 924 KiB |
+| Files on disk             | 3,328      | 85      |
+| `git status`, median of 5 | 49 ms      | 13 ms   |
+
+**Install**, comparing a full clone against the install-capable sparse tree (513 files, every `package.json`). Eleven cold `rush update` runs each, with `common/temp` deleted and the lockfile restored before every run:
+
+| Metric                            | Full clone  | Sparse tree  |
+| --------------------------------- | ----------- | ------------ |
+| Cold `rush update`, median (n=11) | 50.0 s      | 50.8 s       |
+| Range                             | 39.6–66.7 s | 36.6–330.6 s |
+| `common/temp` after install       | 1.20 GiB    | 1.20 GiB     |
+
+The sparse range's outlier is one run that stalled for 330.6 s on the registry. Drop it and the sparse maximum is 67.2 s, which brackets the full clone's 66.7 s. The two distributions overlap almost completely.
+
+**Build** after a one-file change, on a warm tree (incremental state restored before every arm), three runs each:
+
+| Scenario                           | Projects built | p50     |
+| ---------------------------------- | -------------- | ------- |
+| Forced full rebuild                | 407            | 40.86 s |
+| Cold tree, plain `rush build`      | 407            | 34.19 s |
+| Leaf change, `rush build`          | 1              | 1.44 s  |
+| Leaf change, `rush build --from`   | 1              | 1.27 s  |
+| Leaf change, `rush rebuild --from` | 4              | 1.85 s  |
+| Hub change, `rush build`           | 400            | 40.95 s |
+| Hub change, `rush build --from`    | 400            | 41.45 s |
+| Hub change, `rush rebuild --from`  | 401            | 40.84 s |
+
+Before the findings, one caveat about every absolute number above. Re-running the build
+measurements a few hours later on the same machine gave a forced full rebuild of **40.86 s where
+the first session measured 24.60 s**, with the same 407 projects. The machine was busier, and
+nothing in the methodology accounts for that. Treat the ratios as the finding and the absolute
+times as one afternoon's weather. I have kept both sessions' figures visible rather than
+substituting the newer one, because the gap is itself the caveat.
+
+Three things in those tables are worth reading twice.
 
 ### Blobless clone on its own is worse than useless
 
-`--filter=blob:none` alone cloned in 341 ms with a 1,972 KiB `.git`, both worse than the plain clone. Checking out `HEAD` materializes every blob anyway, and the deferred ones land in a second, unconsolidated pack. The win comes from the sparse set that stops those files being written.
-
-Order matters too. Applying the sparse set after a blobless clone cost 561 ms and left the largest `.git` of any mode at 1,988 KiB. Cloning with `--sparse` first and setting the cone afterwards took 160 ms and half the `.git` size.
+`--filter=blob:none` alone cloned in 314 ms with a 1,976 KiB `.git`, against 270 ms and 1,836 KiB for a plain clone. Both worse. Checking out `HEAD` materializes every blob anyway, and the deferred ones land in a second, unconsolidated pack. The win comes from the sparse set that stops those files being written, which is why the two belong together.
 
 ### The `git status` number is the one you feel
 
-76 ms to 13 ms. Git stops checking 3,242 files that are no longer on disk. That is the difference between a command you do not notice and one you do.
+49 ms to 13 ms. Git stops checking 3,243 files that are no longer on disk. That is the difference between a command you do not notice and one you do.
 
-### The install does not move
+### Selection is a CI lever, not a laptop lever
 
-Sparse checkout cut the working tree by 97% and changed install time by nothing. The full clone took 46.5 s and the sparse one 41.9 s, which sits inside the spread of five runs each. `common/temp` came out identical at 1.20 GiB.
+This one corrected me, so it is worth stating plainly. I originally credited the build table's savings to project selection. On a warm tree, selection adds nothing measurable, because Rush already skips unchanged projects by hashing their inputs:
 
-Install cost is the resolution and materialization of the dependency graph, and that graph is the same however many project folders you checked out. The three failures in the previous section explain why you cannot sparsify your way out of it.
+- A leaf change cost 1.44 s with no flags and 1.27 s with `--from`. A 0.17 s gap is inside run-to-run noise.
+- A hub change took 40.95 s, 41.45 s, and 40.84 s across the three arms, because all three had to rebuild the same ~400 dependents.
 
-### Selection depends on the graph, not on the flag
+Selection earns its keep where no incremental state exists. Delete the `.rush` directories from a full clone and a plain `rush build` builds all 407 projects in 34.19 s, because it has nothing to compare against. That is the cold CI runner, and it is the case the `--from` flag is for.
 
-A file with no dependents rebuilt 4 projects in 1.04 s, which is 4% of the full 24.60 s. A file in a package that 400 others depend on rebuilt 401 projects in 24.74 s, which is a full rebuild plus bookkeeping.
+Input hashing is the laptop lever. Selection is the CI lever. Neither one substitutes for the other.
 
-Selection is not magic. It is a function of your dependency graph, and a widely-used shared package will always be expensive to change. The fixture wires all 400 generated packages downstream of that hub package, so the second row is the worst case rather than a rigged one.
-
-The cache was off in this fixture, and a grep across all 30 build and install logs found no cache messages. The only skip reported anywhere came from Rush's incremental change detection.
+The cache was off in this fixture, and a grep across 30 build and install logs found no cache messages. Every skip above came from Rush's incremental change detection.
 
 ## CI and CD
 
@@ -351,22 +390,36 @@ This job installs everything and builds everything, so it scales linearly with t
 
 ### The workflow a large repo wants
 
-In a large repo the checkout is the first thing to shrink. Sparo's CI command takes project selectors and uses a treeless clone, which is the checkout that matches a sparse working tree. The file below is not in this repo. Call it `ci-affected.yml`:
+In a large repo the checkout is the first thing to shrink.
+
+What follows is a design, not a pipeline I have run. I tested the pieces it depends on: the selectors, the filtered install, and the cache behaviour. I did not run this workflow end to end, so treat it as something to verify rather than a recipe.
+
+The rule that matters most is to use **one selector for every step**. If the checkout materializes a different set of projects than the later steps select, some step ends up running against a project that is not on disk.
+
+Call the file `ci-affected.yml`:
 
 ```yaml
 - uses: actions/checkout@v4
   with:
     fetch-depth: 0
 - run: git fetch origin main
-- run: npx sparo-ci checkout --to @hotel/web
-- run: node common/scripts/install-run-rush.js install --to @hotel/web
+- run: npx sparo-ci checkout --from git:origin/main
+- run: node common/scripts/install-run-rush.js install --from git:origin/main
 - run: node common/scripts/install-run-rush.js format:check
-- run: node common/scripts/install-run-rush.js lint
+- run: node common/scripts/install-run-rush.js lint --from git:origin/main
 - run: node common/scripts/install-run-rush.js typecheck --from git:origin/main
 - run: node common/scripts/install-run-rush.js build --from git:origin/main
+- run: git diff --exit-code -- apps/web/src/routeTree.gen.ts
 ```
 
-Four choices in that snippet are deliberate. It uses `--from` rather than `--impacted-by`, because `--impacted-by` selects dependents without their dependencies and fails on a cold worker. It keeps `typecheck` before `build`. It uses `build` rather than `rebuild`, because only `build` reads the cache. And it uses a filtered install, which is the one place install time drops.
+Some choices there are deliberate. It uses `--from` rather than `--impacted-by`, because `--impacted-by` selects dependents without their dependencies and fails on a cold worker. It keeps `typecheck` before `build`. It uses `build` rather than `rebuild`, because only `build` reads the cache. And it uses a filtered install, which is the one place install time drops.
+
+Four parts of that snippet I have not verified, and would check first on a real repo.
+
+- **`fetch-depth: 0` fights the point of a sparse checkout.** Selection needs the merge-base, and that needs the base commit locally, so a shallow clone breaks it. Cloning full history is the blunt fix. `--filter=blob:none` makes that history cheap, or you can fetch just the target branch.
+- **`format:check` cannot be scoped.** It is a global command, so it takes no selector, and on a sparse tree it only sees the files that were materialized. It quietly checks less than it did before.
+- **The route-tree drift check only means something when the web app is in the selected set.** On a change that does not touch `apps/web`, that step compares a file nothing regenerated.
+- **Profile coverage breaks the build, not the install.** Sparo's skeleton keeps every `package.json` and every package's root config files, so `rush install` works from a sparse tree. What fails is building a project whose source the checkout did not pull: `TS18003: No inputs were found in config file`. If the selection used for the checkout and the one used for the checks drift apart, steps fail on missing sources rather than missing manifests.
 
 ![The pull request pipeline, with the build-cache branch made explicit](https://raw.githubusercontent.com/piyushchauhan2011/rushjs-sparo-tutorial/main/docs/diagrams/ci-pipeline.png)
 
