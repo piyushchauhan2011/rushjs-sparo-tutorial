@@ -36,12 +36,27 @@ are the only projects that emit build output.
 
 ## Prerequisites
 
-- Node.js ≥20 (repo pins `nodeSupportedVersionRange` to `>=20.9.0 <25.0.0` in `rush.json`)
+- Node.js 24 — enforced, not advisory: `rush.json` pins `nodeSupportedVersionRange` to
+  `>=20.9.0 <25.0.0`, and Rush aborts _every_ command, `rush install` included, on anything
+  outside that range with _"does not meet the requirements for building this repository"_.
+  A host Node 26 installs nothing at all. The repo ships a `mise.toml` for the pinned
+  toolchain:
+
+  ```bash
+  mise install            # installs the pinned Node (24.22.0)
+  mise exec -- make setup # or: `mise activate` once in your shell, then plain `make`
+  ```
+
+  Any version manager works — `mise.toml` is simply the one committed here; `nvm use 24` or
+  `brew install node@24` are equivalent ways to get a supported Node.
+
 - Docker + Docker Compose (for the containerized golden path)
-- No global Rush/PNPM install needed — `common/scripts/install-run-rush.js` downloads and runs the
-  pinned Rush release (5.178.1), which in turn downloads the pinned PNPM version on first use.
-  If you'd rather install Rush globally, `npm install -g @microsoft/rush` and use `rush`/`rushx`
-  directly instead of the `node common/scripts/install-run-*.js` commands below.
+- Rush 5.181.0 + PNPM 11.5.1 — both pinned in `rush.json`, and neither is ever installed globally:
+  `mise install` puts a matching `rush`/`rushx` on PATH (see `mise.toml`), so the everyday commands
+  are plain `rush build` / `rushx dev`. Rush downloads its own private PNPM copy on first use. Where
+  mise isn't available (the Dockerfiles), `common/scripts/install-run-rush.js` fetches the `rush.json`
+  version and runs it, and Rush's version selector makes a globally installed `rush` do the same —
+  so the two paths always run the pinned engine.
 
 ## Local development
 
@@ -64,7 +79,7 @@ project, that's all you need:
 
 ```bash
 cd apps/web
-rushx dev        # or: node ../../common/scripts/install-run-rushx.js dev
+rushx dev        # or, without mise: node ../../common/scripts/install-run-rushx.js dev
 ```
 
 `make api` and `make web` are just wrappers around exactly that (plus the
@@ -134,10 +149,10 @@ that gets overwritten the next time they're regenerated.
 
 ```bash
 # 1. Install all workspace dependencies (resolves the pnpm lockfile across every project)
-node common/scripts/install-run-rush.js update
+rush update
 
 # 2. Build everything once (shared packages first, then api/web, in dependency order)
-node common/scripts/install-run-rush.js build
+rush build
 
 # 3. Start Postgres (only Postgres — api/web run on the host for local dev)
 docker compose up -d postgres
@@ -150,12 +165,16 @@ cp apps/web/.env.example apps/web/.env
 cd apps/api && node dist/seed.js && cd ../..
 
 # 6. Run both dev servers in parallel (custom Rush global command, see common/config/rush/command-line.json)
-node common/scripts/install-run-rush.js dev
+rush dev
 
 # ...or run just one of them, the way rushjs.io documents:
-cd apps/api && node ../../common/scripts/install-run-rushx.js dev
-cd apps/web && node ../../common/scripts/install-run-rushx.js dev
+cd apps/api && rushx dev
+cd apps/web && rushx dev
 ```
+
+Without mise, prefix every `rush`/`rushx` with `node common/scripts/install-run-` (from the repo root)
+or `node ../../common/scripts/install-run-` (from an app folder) — the scripts download the same
+`rush.json` version. The Dockerfiles do exactly that.
 
 </details>
 
@@ -215,6 +234,10 @@ matters), so it's a deliberate follow-up rather than part of the initial bootstr
 
 ## Notes on versions
 
-Dependency versions were current as of Aug 2026 (Rush 5.178.1, NestJS 11.1.x, TypeORM 1.1.x,
-`@tanstack/react-start` 1.168.x, Tailwind CSS v4). `rush update` will resolve exact patch versions
-within the ranges declared in each project's `package.json`.
+Dependency versions were current as of Aug 2026 (NestJS 11.1.x, TypeORM 1.1.x,
+`@tanstack/react-start` 1.168.x, Tailwind CSS v4); Rush was upgraded to 5.181.0. `rush update` will
+resolve exact patch versions within the ranges declared in each project's `package.json`, and the
+Node/Rush the repo itself runs on are pinned in `mise.toml`. Keep `rushVersion` in `rush.json` in
+step with `mise.toml`: Rush's version selector already makes a globally installed `rush` delegate to
+the `rush.json` release inside this repo, but a stale engine is noise (Rush labels the non-delegated
+case "(unmanaged)") and the mise pin is what makes bare `rush`/`rushx` deterministic here.

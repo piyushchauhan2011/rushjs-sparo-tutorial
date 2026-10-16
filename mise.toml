@@ -1,0 +1,46 @@
+# Toolchain for this repo, managed with mise (https://mise.jdx.dev).
+#
+# Node is pinned to the 24.x line because rush.json sets
+# nodeSupportedVersionRange=">=20.9.0 <25.0.0". Rush enforces that range and
+# aborts with "Your dev environment is running Node.js version ... which does
+# not meet the requirements for building this repository" on anything outside
+# it (Node 25/26 included), so a bare `rush install` on a newer host Node fails
+# before installing a single dependency.
+#
+# Rush comes from the npm registry rather than from common/scripts/install-run-rush.js,
+# so `rush` and `rushx` are plain commands here instead of
+# `node ../../common/scripts/install-run-rushx.js` prefixes. Keep this version in step
+# with "rushVersion" in rush.json: Rush's version selector already makes an older global
+# `rush` delegate to the rush.json release, but pinning here is what makes bare
+# `rush`/`rushx` resolve to the repo's engine rather than to whatever is on PATH. The
+# generated install-run scripts stay in common/scripts/ for the Dockerfiles, which have no
+# mise.
+#
+# Rush downloads its own pinned PNPM (see pnpmVersion in rush.json); PNPM is not
+# managed here on purpose, since Rush installs and owns its private copy.
+#
+#   mise install             # Node + Rush
+#   mise exec -- make setup  # or activate mise once and drop the prefix
+[tools]
+node = "24"
+"npm:@microsoft/rush" = "5.181.0"
+
+[settings]
+# Install the npm-backed tool above with the npm CLI instead of mise's bundled
+# resolver, which refuses this dependency tree. Rush depends (via
+# @rushstack/rush-pnpm-kit-v9) on "@pnpm/lockfile.fs": "npm:@pnpm/lockfile.fs@~1001.1.11",
+# and pnpm publishes its internals in parallel version lines per pnpm major
+# (900.x / 1001.x / 1100.x). Only the newest line carries provenance attestations, so
+# mise reads any 1001.x/1000.x selection as a trust "downgrade" against 1100.x and aborts
+# with ERR trust downgrade. That is a cross-line version comparison, not a tampering
+# signal: the packages come from pnpm's own publish bot (pnpmuser <publish-bot@pnpm.io>,
+# github.com/pnpm/pnpm) and 1001.1.35 is the "latest-10" dist-tag of @pnpm/lockfile.fs.
+#
+# The alternative -- trust_policy_excludes in [tools] -- needs a new exact-version entry
+# for every @pnpm internal in that line (lockfile.fs, lockfile.merger, ...) and again on
+# each pnpm release, so it is a creeping whitelist; this setting is one line and scoped to
+# this repo. It affects only mise's npm: tools (Rush), never the repo's own install path:
+# `rush install` still runs PNPM with the supply-chain policy committed in
+# common/config/rush/pnpm-config.json. Drop this setting once a Rush release resolves
+# attested @pnpm versions.
+npm.shell_out = true

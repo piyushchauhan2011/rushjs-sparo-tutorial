@@ -1,12 +1,13 @@
 # Hotel Booking Monorepo — common developer commands.
 #
-# Rush is invoked via common/scripts/install-run-rush.js (and rushx via
-# install-run-rushx.js), so no global install is needed: those scripts bootstrap
-# the Rush and PNPM versions pinned in rush.json. If you have Rush installed
-# globally you can also just use `rush <command>` / `rushx <script>`.
+# Rush and rushx come from mise (see mise.toml), so every target runs the exact
+# Rush pinned for this repo plus the Node version it requires, regardless of what
+# else is on PATH. The generated common/scripts/install-run-*.js bootstrap is the
+# fallback for environments without mise -- the Dockerfiles use it -- and pulls the
+# same rush.json version.
 
-RUSH    := node common/scripts/install-run-rush.js
-RUSHX   := node ../../common/scripts/install-run-rushx.js -q
+RUSH    := mise exec -- rush
+RUSHX   := mise exec -- rushx -q
 COMPOSE := docker compose
 
 .DEFAULT_GOAL := help
