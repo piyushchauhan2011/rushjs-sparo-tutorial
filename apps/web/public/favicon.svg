@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Hotel Booking">
+  <title>Hotel Booking</title>
+  <!-- Colors are the sRGB equivalents of the theme tokens in src/styles/app.css: #171717 is
+       the primary token (oklch(0.205 0 0)), #fafafa its foreground color, and the #a1a1a1
+       hairline (the ring token) keeps the tile's edge readable against dark browser chrome. -->
+  <rect x=".5" y=".5" width="31" height="31" rx="7.5" fill="#171717" stroke="#a1a1a1" stroke-opacity=".4"/>
+  <g fill="#fafafa">
+    <rect x="6" y="9" width="4.5" height="13.5" rx="1.75"/>
+    <rect x="12.5" y="12.5" width="8" height="4" rx="1.5"/>
+    <rect x="6" y="16.5" width="20" height="6" rx="1.5"/>
+    <rect x="6" y="22.5" width="2" height="3" rx="1"/>
+    <rect x="24" y="22.5" width="2" height="3" rx="1"/>
+  </g>
+</svg>
