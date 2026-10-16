@@ -304,6 +304,8 @@ Both scripts are in this repo, so any of it can be rerun. `docs/bench/generate-f
 
 The sparse range's outlier is one run that stalled for 330.6 s on the registry. Drop it and the sparse maximum is 67.2 s, which brackets the full clone's 66.7 s. The two distributions overlap almost completely.
 
+That overlap is the reason to distrust a single pair of runs. Two back-to-back single samples from my own later re-run came out at 71.0 s for the full clone and 38.2 s for the sparse one, which is the same spread with the sign flipped. Treat one measurement per tree as noise, whichever way it points.
+
 **Build** after a one-file change, on a warm tree (incremental state restored before every arm), three runs each:
 
 | Scenario                           | Projects built | p50     |
