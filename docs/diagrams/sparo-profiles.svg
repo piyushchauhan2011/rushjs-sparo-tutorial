@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 990 460" role="img">
+<title>Sparo profiles select which projects are materialized on disk</title>
+<desc>Three panels list the same seven projects. A full clone checks them all out, while the web and api Sparo profiles leave the projects they do not need dimmed and absent from disk.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#2563eb"/>
+</marker>
+</defs>
+<rect x="0" y="0" width="990" height="460" fill="#ffffff"/>
+<text x="495" y="28" font-family="system-ui, sans-serif" font-size="20" font-weight="bold" fill="#0f172a" text-anchor="middle">Which projects does a profile materialize?</text>
+
+<g transform="translate(20,60)">
+<rect x="5" y="0" width="90" height="34" rx="5" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="50" y="22" font-family="system-ui, sans-serif" font-size="13" fill="#0f172a" text-anchor="middle">web</text>
+<rect x="105" y="0" width="90" height="34" rx="5" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="150" y="22" font-family="system-ui, sans-serif" font-size="13" fill="#0f172a" text-anchor="middle">api</text>
+<rect x="5" y="42" width="90" height="34" rx="5" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="50" y="64" font-family="system-ui, sans-serif" font-size="13" fill="#0f172a" text-anchor="middle">ui</text>
+<rect x="105" y="42" width="90" height="34" rx="5" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="150" y="64" font-family="system-ui, sans-serif" font-size="13" fill="#0f172a" text-anchor="middle">api-client</text>
+<rect x="5" y="84" width="90" height="34" rx="5" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="50" y="106" font-family="system-ui, sans-serif" font-size="13" fill="#0f172a" text-anchor="middle">shared-types</text>
+<rect x="5" y="126" width="90" height="34" rx="5" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="50" y="148" font-family="system-ui, sans-serif" font-size="13" fill="#0f172a" text-anchor="middle">eslint-config</text>
+<rect x="105" y="126" width="90" height="34" rx="5" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="150" y="148" font-family="system-ui, sans-serif" font-size="13" fill="#0f172a" text-anchor="middle">ts-config</text>
+<text x="100" y="190" font-family="system-ui, sans-serif" font-size="15" fill="#0f172a" text-anchor="middle">git clone (full tree)</text>
+</g>
+
+<g transform="translate(345,60)">
+<rect x="5" y="0" width="90" height="34" rx="5" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="50" y="22" font-family="system-ui, sans-serif" font-size="13" fill="#0f172a" text-anchor="middle">web</text>
+<rect x="105" y="0" width="90" height="34" rx="5" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5" fill-opacity="0.35" stroke-opacity="0.35"/>
+<text x="150" y="22" font-family="system-ui, sans-serif" font-size="13" fill="#94a3b8" opacity="0.55" text-anchor="middle">api</text>
+<rect x="5" y="42" width="90" height="34" rx="5" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="50" y="64" font-family="system-ui, sans-serif" font-size="13" fill="#0f172a" text-anchor="middle">ui</text>
+<rect x="105" y="42" width="90" height="34" rx="5" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="150" y="64" font-family="system-ui, sans-serif" font-size="13" fill="#0f172a" text-anchor="middle">api-client</text>
+<rect x="5" y="84" width="90" height="34" rx="5" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="50" y="106" font-family="system-ui, sans-serif" font-size="13" fill="#0f172a" text-anchor="middle">shared-types</text>
+<rect x="5" y="126" width="90" height="34" rx="5" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="50" y="148" font-family="system-ui, sans-serif" font-size="13" fill="#0f172a" text-anchor="middle">eslint-config</text>
+<rect x="105" y="126" width="90" height="34" rx="5" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="150" y="148" font-family="system-ui, sans-serif" font-size="13" fill="#0f172a" text-anchor="middle">ts-config</text>
+<text x="100" y="190" font-family="system-ui, sans-serif" font-size="15" fill="#0f172a" text-anchor="middle">sparo checkout --profile web</text>
+</g>
+
+<g transform="translate(670,60)">
+<rect x="5" y="0" width="90" height="34" rx="5" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5" fill-opacity="0.35" stroke-opacity="0.35"/>
+<text x="50" y="22" font-family="system-ui, sans-serif" font-size="13" fill="#94a3b8" opacity="0.55" text-anchor="middle">web</text>
+<rect x="105" y="0" width="90" height="34" rx="5" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="150" y="22" font-family="system-ui, sans-serif" font-size="13" fill="#0f172a" text-anchor="middle">api</text>
+<rect x="5" y="42" width="90" height="34" rx="5" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5" fill-opacity="0.35" stroke-opacity="0.35"/>
+<text x="50" y="64" font-family="system-ui, sans-serif" font-size="13" fill="#94a3b8" opacity="0.55" text-anchor="middle">ui</text>
+<rect x="105" y="42" width="90" height="34" rx="5" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5" fill-opacity="0.35" stroke-opacity="0.35"/>
+<text x="150" y="64" font-family="system-ui, sans-serif" font-size="13" fill="#94a3b8" opacity="0.55" text-anchor="middle">api-client</text>
+<rect x="5" y="84" width="90" height="34" rx="5" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="50" y="106" font-family="system-ui, sans-serif" font-size="13" fill="#0f172a" text-anchor="middle">shared-types</text>
+<rect x="5" y="126" width="90" height="34" rx="5" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="50" y="148" font-family="system-ui, sans-serif" font-size="13" fill="#0f172a" text-anchor="middle">eslint-config</text>
+<rect x="105" y="126" width="90" height="34" rx="5" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="150" y="148" font-family="system-ui, sans-serif" font-size="13" fill="#0f172a" text-anchor="middle">ts-config</text>
+<text x="100" y="190" font-family="system-ui, sans-serif" font-size="15" fill="#0f172a" text-anchor="middle">sparo checkout --profile api</text>
+</g>
+
+<text x="20" y="430" font-family="system-ui, sans-serif" font-size="14" fill="#0f172a">Dimmed projects exist in Git but are never written to disk</text>
+<text x="20" y="449" font-family="system-ui, sans-serif" font-size="14" fill="#0f172a">by this checkout, so tools that scan the tree cannot see them.</text>
+</svg>

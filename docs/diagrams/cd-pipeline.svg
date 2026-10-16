@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 520" role="img">
+<title>Merge to main: per-app continuous deployment pipeline</title>
+<desc>A merge to main detects the changed deployables and runs one pipeline per app, building the API image and the web image in parallel, then migrating the database, deploying the API, and finally deploying the web app.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+<path d="M0,0 L10,5 L0,10 z" fill="#2563eb"/>
+</marker>
+</defs>
+<rect x="0" y="0" width="1000" height="520" fill="#ffffff"/>
+<text x="20" y="32" font-family="system-ui, sans-serif" font-size="20" font-weight="bold" fill="#0f172a">Merge to main: per-app pipelines</text>
+
+<rect x="20" y="210" width="190" height="62" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="115" y="247" font-family="system-ui, sans-serif" font-size="15" fill="#0f172a" text-anchor="middle">merge to main</text>
+
+<rect x="250" y="210" width="190" height="62" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="345" y="233" font-family="system-ui, sans-serif" font-size="15" fill="#0f172a" text-anchor="middle">detect changed</text>
+<text x="345" y="253" font-family="system-ui, sans-serif" font-size="15" fill="#0f172a" text-anchor="middle">deployables</text>
+
+<rect x="500" y="90" width="190" height="62" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="595" y="127" font-family="system-ui, sans-serif" font-size="15" fill="#0f172a" text-anchor="middle">build image: api</text>
+
+<rect x="500" y="330" width="190" height="62" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="595" y="367" font-family="system-ui, sans-serif" font-size="15" fill="#0f172a" text-anchor="middle">build image: web</text>
+
+<rect x="760" y="60" width="190" height="62" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="855" y="97" font-family="system-ui, sans-serif" font-size="15" fill="#0f172a" text-anchor="middle">migrate DB</text>
+
+<rect x="760" y="190" width="190" height="62" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="855" y="227" font-family="system-ui, sans-serif" font-size="15" fill="#0f172a" text-anchor="middle">deploy API</text>
+
+<rect x="760" y="330" width="190" height="62" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="855" y="367" font-family="system-ui, sans-serif" font-size="15" fill="#0f172a" text-anchor="middle">deploy web</text>
+
+<line x1="210" y1="241" x2="250" y2="241" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="440" y1="241" x2="500" y2="121" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="440" y1="241" x2="500" y2="361" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="690" y1="121" x2="760" y2="91" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="855" y1="122" x2="855" y2="190" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="855" y1="252" x2="855" y2="330" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="690" y1="361" x2="760" y2="361" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow)"/>
+
+<text x="868" y="296" font-family="system-ui, sans-serif" font-size="13" fill="#0f172a">after</text>
+
+<rect x="20" y="430" width="960" height="60" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="40" y="452" font-family="system-ui, sans-serif" font-size="14" fill="#0f172a">Migrations run before the API deploy, and the API deploys before the web app,</text>
+<text x="40" y="470" font-family="system-ui, sans-serif" font-size="14" fill="#0f172a">because the running web app may call an API that is one version ahead of it.</text>
+<text x="40" y="488" font-family="system-ui, sans-serif" font-size="14" fill="#0f172a">Only the app and its dependency closure are rebuilt for each pipeline.</text>
+</svg>

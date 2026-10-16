@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 420" role="img">
+<title>Three bottlenecks that slow large monorepos: Git, install, and build</title>
+<desc>Three columns listing the Git, install, and build/test symptoms of a large monorepo, each paired with the tool that addresses it.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="0" refY="5" markerWidth="7" markerHeight="7" orient="auto" markerUnits="userSpaceOnUse">
+<path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/>
+</marker>
+</defs>
+<rect x="0" y="0" width="980" height="420" fill="#ffffff"/>
+<rect x="24" y="24" width="296" height="46" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<rect x="344" y="24" width="296" height="46" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<rect x="664" y="24" width="296" height="46" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="172" y="47" fill="#0f172a" font-family="system-ui, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" dominant-baseline="middle">Git</text>
+<text x="492" y="47" fill="#0f172a" font-family="system-ui, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" dominant-baseline="middle">Install</text>
+<text x="812" y="47" fill="#0f172a" font-family="system-ui, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" dominant-baseline="middle">Build &amp; test</text>
+<rect x="24" y="100" width="296" height="50" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<rect x="344" y="100" width="296" height="50" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<rect x="664" y="100" width="296" height="50" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="172" y="125" fill="#0f172a" font-family="system-ui, sans-serif" font-size="15" text-anchor="middle" dominant-baseline="middle">object count &amp; tree size</text>
+<text x="492" y="125" fill="#0f172a" font-family="system-ui, sans-serif" font-size="15" text-anchor="middle" dominant-baseline="middle">node_modules</text>
+<text x="812" y="125" fill="#0f172a" font-family="system-ui, sans-serif" font-size="15" text-anchor="middle" dominant-baseline="middle">rebuild everything</text>
+<rect x="24" y="180" width="296" height="50" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<rect x="344" y="180" width="296" height="50" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<rect x="664" y="180" width="296" height="50" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="172" y="205" fill="#0f172a" font-family="system-ui, sans-serif" font-size="15" text-anchor="middle" dominant-baseline="middle">git status / checkout / fetch</text>
+<text x="492" y="205" fill="#0f172a" font-family="system-ui, sans-serif" font-size="15" text-anchor="middle" dominant-baseline="middle">lockfile resolution</text>
+<text x="812" y="205" fill="#0f172a" font-family="system-ui, sans-serif" font-size="15" text-anchor="middle" dominant-baseline="middle">CI minutes</text>
+<rect x="24" y="262" width="296" height="74" rx="6" fill="#f1f5f9" stroke="#2563eb" stroke-width="2"/>
+<rect x="344" y="262" width="296" height="74" rx="6" fill="#f1f5f9" stroke="#2563eb" stroke-width="2"/>
+<rect x="664" y="262" width="296" height="74" rx="6" fill="#f1f5f9" stroke="#2563eb" stroke-width="2"/>
+<text x="172" y="288" fill="#0f172a" font-family="system-ui, sans-serif" font-size="15" text-anchor="middle" dominant-baseline="middle">Sparo: partial clone +</text>
+<text x="172" y="310" fill="#0f172a" font-family="system-ui, sans-serif" font-size="15" text-anchor="middle" dominant-baseline="middle">sparse checkout</text>
+<text x="492" y="299" fill="#0f172a" font-family="system-ui, sans-serif" font-size="15" text-anchor="middle" dominant-baseline="middle">PNPM workspaces + Rush</text>
+<text x="812" y="288" fill="#0f172a" font-family="system-ui, sans-serif" font-size="15" text-anchor="middle" dominant-baseline="middle">Rush build cache +</text>
+<text x="812" y="310" fill="#0f172a" font-family="system-ui, sans-serif" font-size="15" text-anchor="middle" dominant-baseline="middle">--to / --impacted-by</text>
+<line x1="172" y1="70" x2="172" y2="100" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="172" y1="150" x2="172" y2="180" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="172" y1="230" x2="172" y2="262" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="492" y1="70" x2="492" y2="100" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="492" y1="150" x2="492" y2="180" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="492" y1="230" x2="492" y2="262" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="812" y1="70" x2="812" y2="100" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="812" y1="150" x2="812" y2="180" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="812" y1="230" x2="812" y2="262" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+</svg>

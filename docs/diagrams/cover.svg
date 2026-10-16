@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 420" role="img">
+  <title>Cover image: why big monorepos get slow, and what Rush.js and Sparo do about it</title>
+  <desc>A title card reading "Why big monorepos get slow" with the subtitle "Rush.js + Sparo, measured on a real repo", above three chips naming the three bottlenecks and their fixes: Git with sparse checkout, Install with a filtered install, and Build with affected projects.</desc>
+  <rect x="0" y="0" width="1000" height="420" fill="#ffffff"/>
+  <text x="64" y="130" font-family="system-ui, sans-serif" font-size="54" font-weight="bold" fill="#0f172a">Why big monorepos get slow</text>
+  <rect x="64" y="154" width="150" height="6" rx="3" fill="#2563eb"/>
+  <text x="64" y="206" font-family="system-ui, sans-serif" font-size="30" fill="#0f172a">Rush.js + Sparo, measured on a real repo</text>
+  <rect x="60" y="264" width="272" height="80" rx="8" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="196" y="301" font-family="system-ui, sans-serif" font-size="26" font-weight="bold" fill="#0f172a" text-anchor="middle">Git</text>
+  <text x="196" y="329" font-family="system-ui, sans-serif" font-size="16" fill="#94a3b8" text-anchor="middle">sparse checkout</text>
+  <rect x="364" y="264" width="272" height="80" rx="8" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="500" y="301" font-family="system-ui, sans-serif" font-size="26" font-weight="bold" fill="#0f172a" text-anchor="middle">Install</text>
+  <text x="500" y="329" font-family="system-ui, sans-serif" font-size="16" fill="#94a3b8" text-anchor="middle">filtered install</text>
+  <rect x="668" y="264" width="272" height="80" rx="8" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="804" y="301" font-family="system-ui, sans-serif" font-size="26" font-weight="bold" fill="#0f172a" text-anchor="middle">Build</text>
+  <text x="804" y="329" font-family="system-ui, sans-serif" font-size="16" fill="#94a3b8" text-anchor="middle">affected projects</text>
+</svg>
